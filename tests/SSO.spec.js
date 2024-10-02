@@ -21,9 +21,9 @@ test('Signup process with automatic passcode handling', async ({ page }) => {
   expect(await page.isVisible('//*[@id="password-confirm"]')).toBe(true);
 
   // Fill in the fields (replace with actual test values)
-  await page.fill('//*[@id="username"]', 'testuser321'); // Replace with the username
-  await page.fill('//*[@id="password"]', 'Test@user321'); // Replace with the password
-  await page.fill('//*[@id="password-confirm"]', 'Test@user321'); // Confirm password
+  await page.fill('//*[@id="username"]', 'testuser32145'); // Replace with the username
+  await page.fill('//*[@id="password"]', 'Test@user32145'); // Replace with the password
+  await page.fill('//*[@id="password-confirm"]', 'Test@user32145'); // Confirm password
 
   // Click on "Create an Account"
   await page.click('//*[@id="kc-form-buttons"]/input');
