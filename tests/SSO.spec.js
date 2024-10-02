@@ -1,51 +1,77 @@
-
 const { test, expect } = require('@playwright/test');
 
-test('Signup process with automatic passcode handling', async ({ page }) => {
-  // Increase the default timeout to 60 seconds
-  test.setTimeout(60000);
+// Describing a suite of tests related to the registration process
+test.describe('Signup Process with Validations', () => {
 
-  // Navigate to the main page and wait for the DOM content to load instead of the full page
-  await page.goto('https://accounts.bimtvist.com/realms/virtua/protocol/openid-connect/auth?client_id=ResourcePortal-ebb64119-efee-4861-ab65-a71edebcf2e8&redirect_uri=https%3A%2F%2Fdashboard.bimtvist.com%2F&state=b3c98450-66e7-4c35-bd9b-364f47af0f19&response_mode=fragment&response_type=code&scope=openid&nonce=6f6289af-5da7-4d07-9abb-51c1d994641e&code_challenge=ttBOfBv5nqdbJOV9sAmuJwtjKwMNwzM32IDV5G-iP8E&code_challenge_method=S256', { waitUntil: 'domcontentloaded', timeout: 60000 });
+  // Before all tests
+  test.beforeAll(async () => {
+    console.log('Running setup before all tests...');
+    // You can add initialization tasks here, such as setting up a database connection.
+  });
 
-  // Wait for the "Create an Account" button to be visible and click it
-  await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { state: 'visible' });
-  await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
+  // Before each test
+  test.beforeEach(async ({ page }) => {
+    console.log('Running setup before each test...');
+    // Navigate to the signup page before each test
+    await page.goto('https://accounts.bimtvist.com/realms/virtua/protocol/openid-connect/auth?client_id=ResourcePortal-ebb64119-efee-4861-ab65-a71edebcf2e8&redirect_uri=https%3A%2F%2Fdashboard.bimtvist.com%2F&state=b3c98450-66e7-4c35-bd9b-364f47af0f19&response_mode=fragment&response_type=code&scope=openid&nonce=6f6289af-5da7-4d07-9abb-51c1d994641e&code_challenge=ttBOfBv5nqdbJOV9sAmuJwtjKwMNwzM32IDV5G-iP8E&code_challenge_method=S256');
+  });
 
-  // Wait for the signup form to be visible
-  await page.waitForSelector('//*[@id="username"]', { state: 'visible' });
+  // Test case for valid registration scenario
+  test('Successful registration with valid credentials', async ({ page }) => {
+    test.setTimeout(60000); // Set a timeout of 60 seconds
 
-  // Check for the required fields
-  expect(await page.isVisible('//*[@id="username"]')).toBe(true);
-  expect(await page.isVisible('//*[@id="password"]')).toBe(true);
-  expect(await page.isVisible('//*[@id="password-confirm"]')).toBe(true);
+    // Fill in the form with valid data
+    await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
+    await page.fill('//*[@id="username"]', 'testuser5589');
+    await page.fill('//*[@id="password"]', 'Test@user5589');
+    await page.fill('//*[@id="password-confirm"]', 'Test@user5589');
+    
+    // Click Create an Account
+    await page.click('//*[@id="kc-form-buttons"]/input');
+    
+    // Wait for the next page or success message
+    await page.waitForSelector('//*[@id="kc-content-wrapper"]/div/form/div[2]/section/span', { state: 'visible' });
 
-  // Fill in the fields (replace with actual test values)
-  await page.fill('//*[@id="username"]', 'testuser32145'); // Replace with the username
-  await page.fill('//*[@id="password"]', 'Test@user32145'); // Replace with the password
-  await page.fill('//*[@id="password-confirm"]', 'Test@user32145'); // Confirm password
+    // Verify that registration proceeds successfully
+    expect(await page.isVisible('//*[@id="kc-content-wrapper"]/div/form/div[2]/section/span')).toBe(true);
+  });
 
-  // Click on "Create an Account"
-  await page.click('//*[@id="kc-form-buttons"]/input');
+  // Test case for weak password validation
+  test('Weak password shows an error message', async ({ page }) => {
+    await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
+    await page.fill('//*[@id="username"]', 'testuser123');
+    await page.fill('//*[@id="password"]', 'weakpass');
+    await page.fill('//*[@id="password-confirm"]', 'weakpass');
 
-  // Wait for the "Copy Passcode" button to appear
-  await page.waitForSelector('//*[@id="kc-content-wrapper"]/div/form/div[2]/section/span', { state: 'visible' });
+    await page.click('//*[@id="kc-form-buttons"]/input');
 
-  // Click "Copy Passcode" (it should automatically copy it)
-  await page.click('//*[@id="kc-content-wrapper"]/div/form/div[2]/section/span');
+    await page.waitForSelector('//*[@id="kc-register-form"]/div[2]/div/div[2]', { state: 'visible' });
+    expect(await page.textContent('//*[@id="kc-register-form"]/div[2]/div/div[2]')).toBe('Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character');
+  });
 
-  // Click "Next" to proceed to the next step
-  await page.click('//*[@id="kc-login"]');
+  // Test case for invalid username validation
+  test('Invalid username shows an error message', async ({ page }) => {
+    await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
+    await page.fill('//*[@id="username"]', 'user');  // Invalid username (less than 6 characters)
+    await page.fill('//*[@id="password"]', 'Test@user123');
+    await page.fill('//*[@id="password-confirm"]', 'Test@user123');
 
-  // Wait for the passcode input field to be visible
-  await page.waitForSelector('//*[@id="passcode"]', { state: 'visible' });
+    await page.click('//*[@id="kc-form-buttons"]/input');
 
-  // Paste the copied passcode
-  await page.fill('//*[@id="passcode"]', await page.evaluate(() => navigator.clipboard.readText()));
+    await page.waitForSelector('//*[@id="kc-register-form"]/div[1]/div/div', { state: 'visible' });
+    expect(await page.textContent('//*[@id="kc-register-form"]/div[1]/div/div')).toBe('Username must be at least 6 - 20 letters');
+  });
 
-  // Click the "Confirm" button to finalize the signup
-  await page.click('//*[@id="kc-login"]');
+  // After each test
+  test.afterEach(async ({ page }) => {
+    console.log('Cleaning up after each test...');
+    // You can log out the user or clean cookies, etc.
+  });
 
-  // Optionally, wait for the final confirmation or redirection page
-  // await page.waitForNavigation({ waitUntil: 'load' });
+  // After all tests
+  test.afterAll(async () => {
+    console.log('All tests completed!');
+    // Perform any teardown tasks here
+  });
+
 });
