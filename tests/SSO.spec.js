@@ -7,7 +7,7 @@ test.describe('Signup Process with Validations', () => {
   // Before all tests
   test.beforeAll(async () => {
     console.log('Running setup before all tests...');
-    // Initialization tasks like setting up a database connection can go here
+ 
   });
 
   // Before each test
@@ -25,9 +25,9 @@ test.describe('Signup Process with Validations', () => {
     await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
 
     // Fill in valid credentials
-    await page.fill('//*[@id="username"]', 'testuser5589');
-    await page.fill('//*[@id="password"]', 'Test@user5589');
-    await page.fill('//*[@id="password-confirm"]', 'Test@user5589');
+    await page.fill('//*[@id="username"]', 'testuser55899');
+    await page.fill('//*[@id="password"]', 'Test@user55899');
+    await page.fill('//*[@id="password-confirm"]', 'Test@user55899');
 
     // Submit the form
     await page.click('//*[@id="kc-form-buttons"]/input');
@@ -36,6 +36,19 @@ test.describe('Signup Process with Validations', () => {
     await page.waitForSelector('//*[@id="kc-content-wrapper"]/div/form/div[2]/section/span', { state: 'visible' });
     expect(await page.isVisible('//*[@id="kc-content-wrapper"]/div/form/div[2]/section/span')).toBe(true);
   });
+
+  test('Verify that if a user tries to register an existing username then an error message should get displayed.' , {timeout :70000} , async ({page}) =>{
+    await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
+    await page.fill('//*[@id="username"]', 'testuser5589');
+    await page.fill('//*[@id="password"]', 'Test@user5589');
+    await page.fill('//*[@id="password-confirm"]', 'Test@user5589');
+
+    await page.click('//*[@id="kc-form-buttons"]/input');
+
+    // Check for the error message regarding existing username
+    await page.waitForSelector('//*[@id="kc-content-wrapper"]/div/span', { state: 'visible' });
+    expect(await page.textContent('//*[@id="kc-register-form"]/div[2]/div/div[2]')).toBe('User already exists. Please choose a different username.');
+  })
 
   // Test case for weak password validation
   test('Weak password shows an error message', {timeout:70000}, async ({ page }) => {
