@@ -75,6 +75,7 @@ test.describe('Signup Process with Validations', () => {
 
     // Check for the error message regarding the invalid username
     await page.waitForSelector('//*[@id="kc-register-form"]/div[1]/div/div', { state: 'visible' });
+
     expect(await page.textContent('//*[@id="kc-register-form"]/div[1]/div/div')).toBe('Username must be at least 6 - 20 letters');
   });
 
@@ -119,6 +120,7 @@ test.describe('Signup Process with Validations', () => {
   });
 
   // After all tests
+        
   test.afterAll(async () => {
     console.log('All tests completed!');
     // Perform any teardown tasks here
