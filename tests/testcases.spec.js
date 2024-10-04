@@ -68,7 +68,7 @@ test.describe("Verify that test cases work as expected", () => {
         await page.waitForSelector('//*[@id="kc-register-form"]/div[1]/div/div', { state: 'visible' });
         expect(await page.textContent('//*[@id="kc-register-form"]/div[1]/div/div')).toBe('Username must be at least 6 - 20 letters');
     });
-    test('verify that username must be 20 letters', { timeout: 80000 }, async ({ page }) => {
+    test('verify that username must be exeeds 20 letters it display flash error message', { timeout: 80000 }, async ({ page }) => {
         await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
 
@@ -79,13 +79,9 @@ test.describe("Verify that test cases work as expected", () => {
         await page.click('//*[@id="kc-form-buttons"]/input');
 
         // Wait for the error message indicating that the username exceeds the limit
-        await page.waitForSelector('//*[@id="kc-register-form"]/div[1]/div/div', { state: 'visible' });
-        const errorMessage = await page.textContent('//*[@id="kc-register-form"]/div[2]/div/div[2]');
-        if (errorMessage.includes('Password must have 8 - 20 characters')) {
-            expect(errorMessage).toBe('Password must have 8 - 20 characters');
-        } else if (errorMessage.includes('Password must contain at least one lowercase letter')) {
-            expect(errorMessage).toBe('Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character');
-        }
+        await page.waitForSelector('//*[@id="kc-register-form"]/div[1]/div/div', { timeout: 20000 }, { state: 'visible' });
+        const errorMessage = await page.textContent('//*[@id="kc-register-form"]/div[1]/div/div');
+        expect(errorMessage).toBe('Username must be at least 6 - 20 letters');
 
 
     });
@@ -148,6 +144,34 @@ test.describe("Verify that test cases work as expected", () => {
         await page.click('//*[@id="kc-form-buttons"]/input');
 
     });
+    test('Eye icon shows/hides the password', { timeout: 70000 }, async ({ page }) => {
+        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
+        await page.fill('//*[@id="username"]', 'testuser123');
+        await page.fill('//*[@id="password"]', 'Test@user123');
+        await page.fill('//*[@id="password-confirm"]', 'Test@user123');
+
+        // Click the eye icon to show the password
+        await page.click('//*[@id="kc-register-form"]/div[2]/div/div/span/img');
+        const passwordInput = await page.inputValue('//*[@id="password"]');
+        expect(passwordInput).toBe('Test@user123'); // The password should be visible
+
+        // Click the eye icon again to hide the password
+        await page.click('//*[@id="kc-register-form"]/div[2]/div/div/span/img');
+        const passwordType = await page.getAttribute('//*[@id="password"]', 'type');
+        expect(passwordType).toBe('password'); // The password should now be hidden
+    });
+    test('Mismatched passwords and confirm password  show an error', { timeout: 70000 }, async ({ page }) => {
+        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
+        await page.fill('//*[@id="username"]', 'testuser999');
+        await page.fill('//*[@id="password"]', 'Test@user123');
+        await page.fill('//*[@id="password-confirm"]', 'Test@user456'); // Mismatching passwords
+
+        await page.click('//*[@id="kc-form-buttons"]/input');
+
+        // Check for the error message about passwords not matching
+        await page.waitForSelector('//*[@id="kc-register-form"]/div[3]/div/div[2]', { state: 'visible' });
+        expect(await page.textContent('//*[@id="kc-register-form"]/div[3]/div/div[2]')).toBe('Passwords must match');
+    });
 
     test('Verify that  secrete passcode are auto generated ', async ({ page }) => {
         await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
@@ -202,8 +226,8 @@ test.describe("Verify that test cases work as expected", () => {
         expect(passcodeType).toBe('password');
     })
     test('Verify that the Secret Passcode field is readonly', async ({ page }) => {
-       
-  
+
+
         await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
 
@@ -224,7 +248,7 @@ test.describe("Verify that test cases work as expected", () => {
         // Optionally, log the result
         console.log('The Secret Passcode field is readonly:', isReadonly);
     });
-    test.only('Verify Copy Passcode, Next Button, and Confirm Secret Passcode functionality', async ({ page }) => {
+    test('Verify Copy Passcode, Next Button, and Confirm Secret Passcode functionality', { timeout: 80000 }, async ({ page }) => {
         await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
 
@@ -235,7 +259,7 @@ test.describe("Verify that test cases work as expected", () => {
 
         // Submit the form
         await page.click('//*[@id="kc-form-buttons"]/input');
-       
+
 
         // Step 2: Verify that the "Copy Passcode" element is clickable
         const copyPasscodeButton = await page.waitForSelector('//*[@id="kc-content-wrapper"]/div/form/div[2]/section/span', { state: 'visible' });
@@ -270,20 +294,79 @@ test.describe("Verify that test cases work as expected", () => {
 
         // Step 10: Optionally, log the result for debugging
         const enteredPasscode = await passcodeField.inputValue();
-        console.log('Entered Passcode:', enteredPasscode);
+        console.log('Entered Passcode:', enteredPasscode)
+        expect(enteredPasscode).toBe(copiedPasscode);
+    });
+    test.only('Verify that successsful registration with valid credetional and goin to dashboard ', { timeout: 80000 }, async ({ page }) => {
+        await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
+        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
 
-        // Step 11: Verify the passcode is entered correctly
-        expect(enteredPasscode).toBe(copiedPasscode);  // Ensure that the entered passcode matches the copied one
+        // Fill the username and password fields with valid data
+        await page.fill('//*[@id="username"]', 'testuser89');
+        await page.fill('//*[@id="password"]', 'Test@123456789');
+        await page.fill('//*[@id="password-confirm"]', "Test@123456789")
+
+        // Submit the form
+        await page.click('//*[@id="kc-form-buttons"]/input');
+
+
+        // Step 2: Verify that the "Copy Passcode" element is clickable
+        const copyPasscodeButton = await page.waitForSelector('//*[@id="kc-content-wrapper"]/div/form/div[2]/section/span', { state: 'visible' });
+        expect(copyPasscodeButton).toBeTruthy();  // Check that the element is present
+
+        // Step 3: Click the "Copy Passcode" button
+        await copyPasscodeButton.click();
+
+        // Step 4: Verify passcode is copied to clipboard
+        const copiedPasscode = await page.evaluate(() => navigator.clipboard.readText());
+        console.log('Copied passcode:', copiedPasscode);
+        expect(copiedPasscode).toBeTruthy();  // Ensure something is copied
+
+        // Step 5: Verify the "Next" button is clickable
+        const nextButton = await page.waitForSelector('//*[@id="kc-login"]', { state: 'visible' });
+        expect(nextButton).toBeTruthy();  // Check if Next button is present
+
+        // Step 6: Click the "Next" button to move to the "Confirm Secret Passcode" page
+        await nextButton.click();
+
+        // Step 7: Verify we are on the "Confirm Secret Passcode" page by checking the page title
+        const confirmPasscodeTitle = await page.waitForSelector('//*[@id="kc-page-title"]', { state: 'visible' });
+        const titleText = await confirmPasscodeTitle.textContent();
+        expect(titleText).toContain('Confirm Secret Passcode');  // Ensure we are on the right page
+
+        // Step 8: Verify the "Enter your secret passcode" field is editable
+        const passcodeField = await page.waitForSelector('//*[@id="passcode"]', { state: 'visible' });
+        expect(passcodeField).toBeTruthy();  // Ensure the field exists
+
+        // Step 9: Paste the copied passcode into the "Enter your secret passcode" field
+        await passcodeField.fill(copiedPasscode);
+
+        // Step 10: Optionally, log the result for debugging
+        const enteredPasscode = await passcodeField.inputValue();
+        console.log('Entered Passcode:', enteredPasscode)
+        expect(enteredPasscode).toBe(copiedPasscode);
+
+
+       
+        await page.click('[//*[@id="kc-login"]]');
+
+        await page.waitForSelector('h3.title', { visible: true, timeout: 20000 });
+
+        // Verify the text content of the h3 element
+        const titleTextj = await page.textContent('h3.title');
+        expect(titleTextj).toBe('Congratulations!');
+
+
+
+
+
     });
 
 
 })
 
-
-
-
-
 test.afterAll(async () => {
-    console.log('All tests completed!');
+    console.log('All tests are compile ');
 });
+
 
