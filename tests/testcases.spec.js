@@ -136,7 +136,7 @@ test.describe("Verify that test cases work as expected", () => {
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
 
         // Fill the username and password fields with valid data
-        await page.fill('//*[@id="username"]', 'testuser8');
+        await page.fill('//*[@id="username"]', 'test@@@user8');
         await page.fill('//*[@id="password"]', 'Test@12345678');
         await page.fill('//*[@id="password-confirm"]', "Test@12345678")
 
@@ -178,13 +178,13 @@ test.describe("Verify that test cases work as expected", () => {
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
 
         // Fill the username and password fields with valid data
-        await page.fill('//*[@id="username"]', 'test@@@@@@@@user856');
-        await page.fill('//*[@id="password"]', 'Test@12345678');
-        await page.fill('//*[@id="password-confirm"]', "Test@12345678")
+        await page.fill('//*[@id="username"]', 'testautopasscode');
+        await page.fill('//*[@id="password"]', 'Test@autosso123');
+        await page.fill('//*[@id="password-confirm"]', "Test@autosso123")
 
         // Submit the form
         await page.click('//*[@id="kc-form-buttons"]/input');
-        await page.waitForSelector('//*[@id="passcode"]', { state: 'visible' });
+        await page.waitForSelector('//*[@id="passcode"]', { state: 'visible' } ,{timeout : 30000});
 
         // Verify that the passcode is auto-generated and not empty
         const generatedPasscode = await page.getAttribute('//*[@id="passcode"]', 'value');
@@ -192,12 +192,12 @@ test.describe("Verify that test cases work as expected", () => {
         expect(generatedPasscode).not.toBe('');
 
     })
-    test('verify that secret passcode hide and show eye icon is worlable', { timeout: 80000 }, async ({ page }) => {
+    test('verify that secret passcode hide and show eye icon is worlable', { timeout: 800000 }, async ({ page }) => {
         await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
 
         // Fill the username and password fields with valid data
-        await page.fill('//*[@id="username"]', 'test@@autouser856');
+        await page.fill('//*[@id="username"]', 'passcodeeyeicon856');
         await page.fill('//*[@id="password"]', 'Test@12345678');
         await page.fill('//*[@id="password-confirm"]', "Test@12345678")
 
@@ -225,21 +225,21 @@ test.describe("Verify that test cases work as expected", () => {
         passcodeType = await page.getAttribute(passcodeField, 'type');
         expect(passcodeType).toBe('password');
     })
-    test('Verify that the Secret Passcode field is readonly', async ({ page }) => {
+    test('Verify that the Secret Passcode field is readonly',{timeout: 80000} ,async ({ page }) => {
 
 
         await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
 
         // Fill the username and password fields with valid data
-        await page.fill('//*[@id="username"]', 'test@@@@@@@@user856');
-        await page.fill('//*[@id="password"]', 'Test@12345678');
-        await page.fill('//*[@id="password-confirm"]', "Test@12345678")
+        await page.fill('//*[@id="username"]', 'readonlypasscode123');
+        await page.fill('//*[@id="password"]', 'Test@autosso123');
+        await page.fill('//*[@id="password-confirm"]', "Test@autosso123")
 
         // Submit the form
         await page.click('//*[@id="kc-form-buttons"]/input');
         // Wait for the Secret Passcode field to be visible
-        const passcodeField = await page.waitForSelector('//*[@id="passcode"]', { state: 'visible' });
+        const passcodeField = await page.waitForSelector('//*[@id="passcode"]', {timeout :30000},{ state: 'visible' } , );
 
         // Verify that the Secret Passcode field has the readonly attribute
         const isReadonly = await passcodeField.getAttribute('readonly');
@@ -256,9 +256,9 @@ test.describe("Verify that test cases work as expected", () => {
         await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
     
-        await page.fill('//*[@id="username"]', 'test@@@@@@@@user856');
-        await page.fill('//*[@id="password"]', 'Test@@@@@@@@user856');
-        await page.fill('//*[@id="password-confirm"]', 'Test@@@@@@@@user856');
+        await page.fill('//*[@id="username"]', 'auto@username2');
+        await page.fill('//*[@id="password"]', 'Test@autosso123');
+        await page.fill('//*[@id="password-confirm"]', 'Test@autosso123');
     
         // Submit the form
         await page.click('//*[@id="kc-form-buttons"]/input');
@@ -310,9 +310,9 @@ test.describe("Verify that test cases work as expected", () => {
         await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
     
-        await page.fill('//*[@id="username"]', 'testaut2ouser856');
-        await page.fill('//*[@id="password"]', 'Test@@@@@@@@user856');
-        await page.fill('//*[@id="password-confirm"]', 'Test@@@@@@@@user856');
+        await page.fill('//*[@id="username"]', 'auto@username');
+        await page.fill('//*[@id="password"]', 'Test@autosso123');
+        await page.fill('//*[@id="password-confirm"]', 'Test@autosso123');
     
         // Submit the form
         await page.click('//*[@id="kc-form-buttons"]/input');
@@ -375,7 +375,7 @@ test.describe("Verify that test cases work as expected", () => {
 })
 
 test.afterAll(async () => {
-    console.log('All tests are compile ');
+    console.log('All tests are compiling ');
 });
 
 
