@@ -11,6 +11,16 @@ const { defineConfig, devices } = require('@playwright/test');
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
+
+  metadata:{
+      environment : 'staging',
+      author :'ans.farooq@bigimmersives.com',
+      description : 'This is a full automate test suite for SSO script',
+      tags: ['SSO','Login'],
+      createdOn : '---------',
+      lastUpdated : 'Oct 9 ,2024',
+      browser: 'Chromium',
+  },
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,

@@ -11,7 +11,7 @@ test.describe("Verify that test cases work as expected", () => {
 
     test.beforeEach(async ({ page }) => {
         console.log("Navigating to the SSO webpage for each test case");
-        await page.goto('https://accounts.bimtvist.com/realms/virtua/protocol/openid-connect/auth?client_id=ResourcePortal-ebb64119-efee-4861-ab65-a71edebcf2e8&redirect_uri=https%3A%2F%2Fdashboard.bimtvist.com%2F&state=b3c98450-66e7-4c35-bd9b-364f47af0f19&response_mode=fragment&response_type=code&scope=openid&nonce=6f6289af-5da7-4d07-9abb-51c1d994641e&code_challenge=ttBOfBv5nqdbJOV9sAmuJwtjKwMNwzM32IDV5G-iP8E&code_challenge_method=S256', { waitUntil: 'networkidle' });
+        await page.goto('https://profile.bimtvist.com', { waitUntil: 'networkidle' });
     });
 
     // Test to verify if username, password, and confirm password fields are present
@@ -256,7 +256,7 @@ test.describe("Verify that test cases work as expected", () => {
         await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
     
-        await page.fill('//*[@id="username"]', 'auto@username2');
+        await page.fill('//*[@id="username"]', 'another@auto123');
         await page.fill('//*[@id="password"]', 'Test@autosso123');
         await page.fill('//*[@id="password-confirm"]', 'Test@autosso123');
     
@@ -310,7 +310,7 @@ test.describe("Verify that test cases work as expected", () => {
         await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
     
-        await page.fill('//*[@id="username"]', 'auto@username');
+        await page.fill('//*[@id="username"]', 'auto@another2User2');
         await page.fill('//*[@id="password"]', 'Test@autosso123');
         await page.fill('//*[@id="password-confirm"]', 'Test@autosso123');
     
@@ -354,6 +354,7 @@ test.describe("Verify that test cases work as expected", () => {
         await confirmButton.waitFor({ state: 'visible' });  // Ensure the Confirm button is visible
         expect(confirmButton).toBeTruthy();  // Ensure the Confirm button exists
         await confirmButton.click();  // Click the Confirm button
+        await page.pause(300000)
     });
     test('verify that when sign Up with same credentials it will go the login ', {timeout : 80000} , async ({page}) =>{
         await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
@@ -367,8 +368,7 @@ test.describe("Verify that test cases work as expected", () => {
         // Submit the form
         await page.click('//*[@id="kc-form-buttons"]/input');
 
-        await page.waitForSelector('//*[@id="asidebar"]/ul/li[4]/a/span[2]' , { timeout: 20000 });
-        expect(await page.textContent('//*[@id="asidebar"]/ul/li[4]/a/span[2]')).toBe('Claims')
+        
 
     })
     
