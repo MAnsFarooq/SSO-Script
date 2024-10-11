@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { SignUp} = require('./signupclass.js');
 
 // Set a timeout of 60 seconds (60000 milliseconds) for all test cases
 test.setTimeout(80000);
@@ -41,43 +42,28 @@ test.describe("Verify that test cases work as expected", () => {
     // Test to verify the upper limit of the username field (6 to 20 characters)
     test('Verify that the username cannot exceed the upper limit of 20 characters', { timeout: 80000 }, async ({ page }) => {
         // Navigate to the registration page
-        await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
-        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
-
-        // Fill the username field with more than 20 characters
-        await page.fill('//*[@id="username"]', 'thisisaverylongusername12345');
-
-        // Submit the form
-        await page.click('//*[@id="kc-form-buttons"]/input');
+        const sign = new SignUp(page);
+        await sign.createAnAccount();
+        await sign.fillSignUpform('thisisaverylongusername12345', 'Password@123', "Pasword@123")
 
         // Wait for the error message indicating that the username exceeds the limit
         await page.waitForSelector('//*[@id="kc-register-form"]/div[1]/div/div', { state: 'visible' });
         expect(await page.textContent('//*[@id="kc-register-form"]/div[1]/div/div')).toBe('Username must be at least 6 - 20 letters');
     });
     test("verify the lower limit of the username ", { timeout: 80000 }, async ({ page }) => {
-        await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
-        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
-
-        // Fill the username field with less than 6 characters
-        await page.fill('//*[@id="username"]', 'user');
-
-        // Submit the form
-        await page.click('//*[@id="kc-form-buttons"]/input');
-
+        const signup = new SignUp(page);
+        await signup.createAnAccount();
+        await signup.fillSignUpform('user', 'Password@123', "Pasword@123");
+        await signup.submitForm();
         // Wait for the error message indicating that the username is too short
         await page.waitForSelector('//*[@id="kc-register-form"]/div[1]/div/div', { state: 'visible' });
         expect(await page.textContent('//*[@id="kc-register-form"]/div[1]/div/div')).toBe('Username must be at least 6 - 20 letters');
     });
     test('verify that username must be exeeds 20 letters it display flash error message', { timeout: 80000 }, async ({ page }) => {
-        await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
-        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
-
-        // Fill the username field with 20 characters
-        await page.fill('//*[@id="username"]', 'thisisaverylongusername12345678901234567890');
-
-        // Submit the form
-        await page.click('//*[@id="kc-form-buttons"]/input');
-
+         const signup = new SignUp(page);
+         signup.createAnAccount();
+         signup.fillSignUpform('thisisaverylongusername12345678901234567890', 'Password@123', "Pasword@123");
+         await signup.submitForm();
         // Wait for the error message indicating that the username exceeds the limit
         await page.waitForSelector('//*[@id="kc-register-form"]/div[1]/div/div', { timeout: 20000 }, { state: 'visible' });
         const errorMessage = await page.textContent('//*[@id="kc-register-form"]/div[1]/div/div');
@@ -86,79 +72,47 @@ test.describe("Verify that test cases work as expected", () => {
 
     });
     test('verify that password enter less than 8 character it should display error message', async ({ page }) => {
-        await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
-        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
-
-        // Fill the username and password fields with valid data
-        await page.fill('//*[@id="username"]', 'testuser');
-        await page.fill('//*[@id="password"]', 'Test12345678');
-
-        // Submit the form
-        await page.click('//*[@id="kc-form-buttons"]/input');
-
+            const signup = new SignUp(page);
+            await signup.createAnAccount();
+            await signup.fillSignUpform('testpasslenght', 'Test@', "Test@");
+            await signup.submitForm();
         // Wait for the error message indicating that the password is too short  
     })
     test('verify that password must be at least 8 characters long ', { timeout: 80000 }, async ({ page }) => {
-        await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
-        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
-
-        // Fill the username and password fields with valid data
-        await page.fill('//*[@id="username"]', 'testuser6');
-        await page.fill('//*[@id="password"]', 'Test@user3366');
-        await page.fill('//*[@id="password-confirm"]', "Test@user3366")
-
-        // Submit the form
-        await page.click('//*[@id="kc-form-buttons"]/input');
+            const signup = new SignUp(page);
+            await signup.createAnAccount();
+            await signup.fillSignUpform('testlenghtre8', 'Test@123Bim', "Test@123Bim");
 
         // page will goto secret code section
         await page.waitForSelector('//*[@id="kc-content-wrapper"]/div/form/div[2]/section/span', { timeout: 20000 })
         expect(await page.textContent('//*[@id="kc-content-wrapper"]/div/form/div[2]/section/span')).toBe('Copy Passcode');
     });
     test('Verify that error message should display if password is not strong  like upper case , digits , special characters and small letters', { timeout: 80000 }, async ({ page }) => {
-        await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
-        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
-
-        // Fill the username and password fields with valid data
-        await page.fill('//*[@id="username"]', 'testuser7');
-        await page.fill('//*[@id="password"]', 'testuser123');
-        await page.fill('//*[@id="password-confirm"]', 'testuser123')
-
-        // Submit the form
-        await page.click('//*[@id="kc-form-buttons"]/input');
-
-        // Wait for the error message indicating that the password is too weak
+       const signUp = new SignUp(page);
+       await signUp.createAnAccount();
+       await signUp.fillSignUpform('testpassstrong', 'test@123Bim', "test@123Bim");
+// Wait for the error message indicating that the password is too weak
         await page.waitForSelector('//*[@id="kc-register-form"]/div[2]/div/div[2]', { state: 'visible' }, { timeout: 20000 });
         expect(await page.textContent('//*[@id="kc-register-form"]/div[2]/div/div[2]')).toBe('Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character')
 
     })
     test('verify password and confirm password are same ', { timeout: 80000 }, async ({ page }) => {
-        await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
-        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
-
-        // Fill the username and password fields with valid data
-        await page.fill('//*[@id="username"]', 'test@@@user8');
-        await page.fill('//*[@id="password"]', 'Test@12345678');
-        await page.fill('//*[@id="password-confirm"]', "Test@12345678")
-
-        // Submit the form
-        await page.click('//*[@id="kc-form-buttons"]/input');
-
+        const signUp = new SignUp(page);
+        await signUp.createAnAccount();
+        await signUp.fillSignUpform('testpassstrong', 'Test@123Bim', "Test@123Bim123");
+        // when password are match so it gonna to the secret page so the test case is pase
     });
-    test('Eye icon shows/hides the password', { timeout: 70000 }, async ({ page }) => {
-        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
-        await page.fill('//*[@id="username"]', 'testuser123');
-        await page.fill('//*[@id="password"]', 'Test@user123');
-        await page.fill('//*[@id="password-confirm"]', 'Test@user123');
-
-        // Click the eye icon to show the password
-        await page.click('//*[@id="kc-register-form"]/div[2]/div/div/span/img');
-        const passwordInput = await page.inputValue('//*[@id="password"]');
-        expect(passwordInput).toBe('Test@user123'); // The password should be visible
-
+    test.only('Eye icon shows/hides the password', { timeout: 70000 }, async ({ page }) => {
+        const signUp = new SignUp(page);
+        await signUp.createAnAccount();
+        await signUp.fillSignUpform('testpasseyeicon', 'Test@user123Bim', 'Test@user123Bim');
+        //click on eyeicon for show password
+        const passwordVisible = await signUp.togglePasswordVisibility();
+        expect(passwordVisible).toBe('Test@user123Bim');      
         // Click the eye icon again to hide the password
-        await page.click('//*[@id="kc-register-form"]/div[2]/div/div/span/img');
-        const passwordType = await page.getAttribute('//*[@id="password"]', 'type');
-        expect(passwordType).toBe('password'); // The password should now be hidden
+        await signUp.togglePasswordVisibility();
+        const isPasswordHidden = await signUp.isPasswordHidden();
+        expect(isPasswordHidden).toBe(true);  // The password should now be hidden
     });
     test('Mismatched passwords and confirm password  show an error', { timeout: 70000 }, async ({ page }) => {
         await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
@@ -227,17 +181,11 @@ test.describe("Verify that test cases work as expected", () => {
     })
     test('Verify that the Secret Passcode field is readonly',{timeout: 80000} ,async ({ page }) => {
 
+        const signup = new SignUp(page);
+        await signup.createAnAccount();
+        await signup.fillSignUpform('readonlypasscode123','Test@autosso123', 'Test@autosso123')
+        await signup.submitForm();
 
-        await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
-        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
-
-        // Fill the username and password fields with valid data
-        await page.fill('//*[@id="username"]', 'readonlypasscode123');
-        await page.fill('//*[@id="password"]', 'Test@autosso123');
-        await page.fill('//*[@id="password-confirm"]', "Test@autosso123")
-
-        // Submit the form
-        await page.click('//*[@id="kc-form-buttons"]/input');
         // Wait for the Secret Passcode field to be visible
         const passcodeField = await page.waitForSelector('//*[@id="passcode"]', {timeout :30000},{ state: 'visible' } , );
 
@@ -252,14 +200,11 @@ test.describe("Verify that test cases work as expected", () => {
         // Grant clipboard permissions
         await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
     
-        // Step 1: Navigate and login
-        await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
-        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
-    
-        await page.fill('//*[@id="username"]', 'another@auto123');
-        await page.fill('//*[@id="password"]', 'Test@autosso123');
-        await page.fill('//*[@id="password-confirm"]', 'Test@autosso123');
-    
+        const signup = new SignUp(page);
+        await signup.createAnAccount();
+        await signup.fillSignUpform('testcopypasscode','Test@autosso123', 'Test@autosso123')
+        await signup.submitForm();
+        
         // Submit the form
         await page.click('//*[@id="kc-form-buttons"]/input');
     
@@ -356,20 +301,11 @@ test.describe("Verify that test cases work as expected", () => {
         await confirmButton.click();  // Click the Confirm button
         await page.pause(300000)
     });
-    test('verify that when sign Up with same credentials it will go the login ', {timeout : 80000} , async ({page}) =>{
-        await page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
-        await page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
-
-        // Fill the username and password fields with valid data
-        await page.fill('//*[@id="username"]', 'test@@@@@@@@user8');
-        await page.fill('//*[@id="password"]', 'Test@123456789');
-        await page.fill('//*[@id="password-confirm"]', "Test@123456789")
-
-        // Submit the form
-        await page.click('//*[@id="kc-form-buttons"]/input');
-
-        
-
+    test.only('verify that when sign Up with same credentials it will go the login ', {timeout : 80000} , async ({page}) =>{
+      const signUp = new SignUp(page);
+      await signUp.createAnAccount();
+      await signUp.fillSignUpform('auto@another2User2' ,'Test@autosso123' ,'Test@autosso123')
+      await signUp.submitForm();
     })
     
 })
