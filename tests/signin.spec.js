@@ -11,6 +11,7 @@ test.describe('Verify that Sigun-In test work as expected', () => {
     test.beforeEach(async ({ page }) => {
         await page.goto('https://profile.bimtvist.com', { waitUntil: 'networkidle' });
     });
+
     test('TCSSO33:verify that logged in with correct credentials', { timeout: 700000 }, async ({ page }) => {
         const login = new Login(page);
         await login.fillLoginForm('ansfarooq04', 'Ansfarooq04');
@@ -36,8 +37,35 @@ test.describe('Verify that Sigun-In test work as expected', () => {
         await login.signIn();
         await page.waitForSelector('//*[@id="kc-content-wrapper"]/div[1]/span', { state: 'visible' });
         expect(await page.textContent('//*[@id="kc-content-wrapper"]/div[1]/span')).toBe('Invalid username or password')
-        
+
     })
+    test("TCSSO : 37 verify that Enter Correct Pasword and In-correct Username it flash error message", { timeout :700000} , async ({page}) =>{
+        const login = new Login(page);
+        await login.fillLoginForm(
+            'Ansfarooq04', // incorrect username 
+            'Ansf@rooq04',
+        )
+        console.log('check mark capachta by manually');
+        await new Promise(resolve => setTimeout(resolve, 20000)); // Wait 20 seconds for CAPTCHA handling
+        await login.signIn();
+        await page.waitForSelector('//*[@id="kc-content-wrapper"]/div[1]/span', { state: 'visible' });
+        expect(await page.textContent('//*[@id="kc-content-wrapper"]/div[1]/span')).toBe('Invalid username or password')
+    });
+    test.only('TCSSO38: verify bu enter correct username and in correct password flash error msg ' , {timeout : 700000} , async ({page}) =>{
+        const login = new Login(page);
+        await login.fillLoginForm(
+            'Ansfarooq04',
+            'Ansfarooq04wrong'
+        )
+        console.log('check mark capachta by manually');
+        await new Promise(resolve => setTimeout(resolve, 20000)); // Wait 20 seconds for CAPTCHA handling
+        await login.signIn();
+        await page.waitForSelector('//*[@id="kc-content-wrapper"]/div[1]/span', { state: 'visible' });
+        expect(await page.textContent('//*[@id="kc-content-wrapper"]/div[1]/span')).toBe('Invalid username or password')
+    })
+
+
+
 
 })
 

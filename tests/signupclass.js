@@ -1,30 +1,45 @@
-class SignUp {
-    constructor(page) {
-        this.page = page;
-        this.passEyeIconSelector = '//*[@id="kc-register-form"]/div[2]/div/div/span/img';
-        this.passwordFieldSelector = '//*[@id="password"]';
-    }
-    async createAnAccount() {
-        await this.page.waitForSelector('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a', { timeout: 10000 });
-        await this.page.click('//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a');
+const { 
+    UserName,
+    Password,
+    ConfirmPassword,
+    ErrorMessage,
+    secretPasscodefield,
+    IconEyeIconPassword,
+    passcodeEyeIcon,
+    NextButton,
+    copyPasscodeButton,
+    confirmButton,
+    createAccountButton,
+    SubmitSignForm,
+} = require('../pageObject/signUp.js');
+
+const BasePage = require('../classPage/baseclass')
+
+class SignUp extends BasePage{
+    constructor (page){
+        super(page);
     };
-    async fillSignUpform(username , password , passwordConfirm)  {
-        await this.page.fill('//*[@id="username"]', username);
-        await this.page.fill('//*[@id="password"]', password);
-        await this.page.fill('//*[@id="password-confirm"]', passwordConfirm);
-    }
-    async submitForm() {
-        await this.page.click('//*[@id="kc-form-buttons"]/input');
+    async clickCreateAnAccountButton() {
+        await this.click(createAccountButton);
+    };
+    async fillSignUpform(username, password, confirmPassword) {
+        await this.fillInput(UserName, username );
+        await this.fillInput(Password, password);
+        await this.fillInput(ConfirmPassword, confirmPassword);
+    };
+    async submitForm(){
+        await this.click(SubmitSignForm)
     };
     async togglePasswordVisibility() {
-        return await this.page.inputValue(this.passwordFieldSelector);
-    };
-    async waitForPasswordField() {
-        await this.page.waitForSelector(this.passwordFieldSelector, { timeout: 10000 });
-    };
+        await this.click(eyeIconSelector);
+        return await this.getAttribute(IconEyeIconPassword, 'type') === 'text'
+            ? await this.page.inputValue(IconEyeIconPassword)
+            : '';
+    }
+
     async isPasswordHidden() {
-        const passwordType = await this.page.getAttribute(this.passwordFieldSelector, 'type');
-    return passwordType === 'password';
-    };
+        return await this.getAttribute(IconEyeIconPassword, 'type') === 'password';
+    }
 }
-module.exports = {SignUp};
+
+module.exports = SignUp;
