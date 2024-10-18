@@ -8,8 +8,8 @@
     "StrongPassword":"Password@Bim123",
     "passwordLessThan8":"Pass@12",
     "verifyUsername":"Test@User123",
-    "sixcharusername":"User@T"
-
-
-    
+    "sixcharusername":"User@T",
+    "weakPasswordMsg":"Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character",
+    "isNotsamePasswordErrorMsg":"Passwords must match",
+    "secretPasscode":"Secret Passcode"    
 }

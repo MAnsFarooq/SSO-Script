@@ -33,7 +33,8 @@ class BasePage {
     
         // Get the text content and compare it with the expected value
         const actualText = await this.page.textContent(selector);
-        console.log(`Text found: ${actualText}`); // Debugging log
+        console.log(`Text found: ${actualText}`); 
+        console.log("value",value)// Debugging log
         expect(actualText).toBe(value); // Assertion to check if the text matches
     }
 
