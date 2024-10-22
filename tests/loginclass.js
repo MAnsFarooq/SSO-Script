@@ -1,14 +1,37 @@
-class Login{
-    constructor (page) {
-        this.page = page;
+const {
+    loginUsernameXpath,
+    loginPasswordXpath,
+    SignButtonEnableXpath,
+    eyeIconPasswordXpath,
+} = require('../pageObject/login.js');
+
+
+const BasePage = require('../classPage/baseclass');
+
+class Login extends BasePage {
+    constructor(page){
+        super(page);
+    };
+    async fillLoginForm(username , password){
+        await this.fillInput(loginUsernameXpath , username);
+        await this.fillInput(loginPasswordXpath , password);
+    };
+    async clickSignButton(){
+        await this.click(SignButtonEnableXpath);
+    };
+    async togglePasswordVisibility(){
+        await this.click(eyeIconPasswordXpath);
+        return await this.getAttribute(loginPasswordXpath, 'type') === 'text'
+           ? await this.page.inputValue(loginPasswordXpath)
+            : '';
     }
-    async fillLoginForm (username , password) {
-        await this.page.fill('//*[@id="username"]' ,username )
-        await this.page.fill('//*[@id="password"]' , password);
-    }
-    async signIn (){
-        await this.page.waitForSelector('//*[@id="kc-login"]' , {state : 'visible'});
-        await this.page.click('//*[@id="kc-login"]');
-    }
-}
-module.exports = {Login};
+    async isPasswordHidden(){
+        return await this.getAttribute(loginPasswordXpath, 'type') === 'password';
+    };
+
+
+
+};
+
+module.exports = Login;
+

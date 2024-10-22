@@ -94,8 +94,8 @@ class SignUp extends BasePage {
     };
     async isCopyppasscodeButtonisClickbaleAndCopyPasscode() {
         await this.page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-        //const clipboardText = await page.evaluate(async () => await navigator.clipboard.readText());
         await this.click(copyPasscodeButton);
+        const clipboardText = await this.page.evaluate(async () => await navigator.clipboard.readText());
         return expect(copyPasscodeButton).toBeTruthy();
     };
     async isNextButtonEnable() {
@@ -115,12 +115,15 @@ class SignUp extends BasePage {
 
     };
     async pasteSecretePasscode() {
-        await this.isCopyppasscodeButtonisClickbaleAndCopyPasscode();
         const clipboardText = await this.page.evaluate(async () => await navigator.clipboard.readText());
-        console.log("clipboard", clipboardText);
+        //console.log("clipboard", clipboardText);
         await this.page.focus(secretPasscodeFieldXpath);
         await this.fillInput(secretPasscodeFieldXpath, clipboardText)
     };
+
+    async clickOnConfirmButton() {
+        await this.click(confirmButton);
+    }
 
 
 

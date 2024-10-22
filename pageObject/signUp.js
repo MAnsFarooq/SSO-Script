@@ -7,7 +7,7 @@ export const IconEyeIconPassword = '//*[@id="kc-register-form"]/div[2]/div/div/s
 export const passcodeEyeIcon = '//*[@id="kc-content-wrapper"]/div/form/div[1]/div/span/img';
 //export const NextButton = '//*[@id="kc-login"]';
 export const copyPasscodeButton = '//*[@id="kc-content-wrapper"]/div/form/div[2]/section/span';
-export const confirmButton = '//*[@id="kc-page-title"]';
+export const confirmButton = '//*[@id="kc-login"]';
 export const createAccountButton = '//*[@id="kc-form-login"]/div[3]/div[1]/div/span/a';
 export const SubmitSignForm = '//*[@id="kc-form-buttons"]/input';
 export const UserNameErrorMsg = '//*[@id="kc-register-form"]/div[1]/div/div'
@@ -20,4 +20,4 @@ export const secretPasscodePageXpath = '//*[@id="kc-page-title"]';
 export const secretPasscodeFieldXpath = '//*[@id="passcode"]';
 export const NextButtonxPath ='//*[@id="kc-login"]';
 export const ConfirmSecretpasscodePageXpath ='//*[@id="kc-page-title"]';
-//*[@id="passcode"]//*[@id="passcode"]
+export const acountOverViewPageXpath = '//*[@id="asidebar"]/ul/li[1]/a' //*[@id="kc-login"]

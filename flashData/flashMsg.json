@@ -7,9 +7,27 @@
     "WeakPassword":"password",
     "StrongPassword":"Password@Bim123",
     "passwordLessThan8":"Pass@12",
-    "verifyUsername":"Test@User123",
+    "verifyUsername":"Test@User1234569",
     "sixcharusername":"User@T",
     "weakPasswordMsg":"Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character",
     "isNotsamePasswordErrorMsg":"Passwords must match",
-    "secretPasscode":"Secret Passcode"    
+    "secretPasscode":"Secret Passcode",
+    "validUsername":"validUsername3",
+
+
+    "_comment": "This is for Login",
+    "loginErrorMsg":"Invalid username or password",
+    "correctValidUserName":"ansfarooq04",
+    "correctValidPassword":"Ansf@rooq04",
+    "in-correctUsername":"",
+    "incorrectPassword":"IncorrectPass",
+    "uppercasePassword":"ANSF@ROOQ04",
+    "lowercasePassword":"ansf@rooq04"
+
+    
+
+
+
+
+        
 }
