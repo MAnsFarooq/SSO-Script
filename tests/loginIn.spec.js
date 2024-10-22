@@ -95,7 +95,7 @@ test.describe('Verify that Sigun-In test work as expected', () => {
         await login.togglePasswordVisibility();
         await login.isPasswordHidden();
     });
-    test.only('Verify closing and reopening the browser does not log out authenticated user', async ({ browser }) => {
+    test('Verify closing and reopening the browser does not log out authenticated user', async ({ browser }) => {
         // Step 1: Launch a new browser context
         const context = await browser.newContext();
         const page = await context.newPage();
@@ -132,6 +132,35 @@ test.describe('Verify that Sigun-In test work as expected', () => {
         // Step 10: Clean up
         await newContext.close();
     });
+    test('Verify login session timeout duration', async ({ browser }) => {
+        const context = await browser.newContext();
+        const page = await context.newPage();
+        const login = new Login(page);
+    
+        // Step 1: Log in with valid credentials
+        await page.goto('https://profile.bimtvist.com/login');
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+    
+        // Step 2: Verify the user is logged in
+        await login.isVisible(accountOvewrviewXpath); // Adjust to your app's selector
+    
+        // Step 3: Simulate session expiration
+        // Clear cookies to simulate session timeout
+        await context.clearCookies();
+    
+        // Step 4: Attempt to access the protected resource after clearing cookies
+        await page.reload();
+
+        await page.pause(50000)
+    
+        // Step 5: Verify the user is logged out
+        await login.isVisible(loginUsernameXpath);
+    
+        // Clean up
+        await context.close();
+    });
+    
 
 
 
