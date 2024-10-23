@@ -21,3 +21,4 @@ export const secretPasscodeFieldXpath = '//*[@id="passcode"]';
 export const NextButtonxPath ='//*[@id="kc-login"]';
 export const ConfirmSecretpasscodePageXpath ='//*[@id="kc-page-title"]';
 export const acountOverViewPageXpath = '//*[@id="asidebar"]/ul/li[1]/a' //*[@id="kc-login"]
+export const secretPasscodeFieldIndropDown ='input[type="text"][readonly]'

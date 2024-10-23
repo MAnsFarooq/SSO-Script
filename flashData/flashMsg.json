@@ -22,7 +22,10 @@
     "in-correctUsername":"",
     "incorrectPassword":"IncorrectPass",
     "uppercasePassword":"ANSF@ROOQ04",
-    "lowercasePassword":"ansf@rooq04"
+    "lowercasePassword":"ansf@rooq04",
+
+    "_comment2": "This is for Login",
+    "uploadImageErrorMsg" :"Please enter a valid image name with extension jpg, jpeg, png, or gif"
 
     
 
