@@ -5,14 +5,14 @@
     "usernamelessThan6":"user",
     "userGreatorThan20":"TbKdpKwMdslVMPSo7cwztJg0J",
     "WeakPassword":"password",
-    "StrongPassword":"Password@Bim123",
+    "StrongPassword":"Torres12!!",
     "passwordLessThan8":"Pass@12",
     "verifyUsername":"Test@User1234569",
     "sixcharusername":"User@T",
     "weakPasswordMsg":"Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character",
     "isNotsamePasswordErrorMsg":"Passwords must match",
     "secretPasscode":"Secret Passcode",
-    "validUsername":"validUsername3",
+    "validUsername":"gamer50",
 
 
     "_comment": "This is for Login",
@@ -25,7 +25,9 @@
     "lowercasePassword":"ansf@rooq04",
 
     "_comment2": "This is for Login",
-    "uploadImageErrorMsg" :"Please enter a valid image name with extension jpg, jpeg, png, or gif"
+    "uploadImageErrorMsg" :"Please enter a valid image name with extension jpg, jpeg, png, or gif",
+
+    "userNameAlreadyExist":"User already exists with this email!"
 
     
 

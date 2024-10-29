@@ -16,6 +16,7 @@ const {
     NextButtonxPath,
     ConfirmSecretpasscodePageXpath,
     secretPasscodeFieldIndropDown,
+    countrySelectorDropdown
 
 } = require('../pageObject/signUp.js');
 
@@ -142,6 +143,16 @@ class SignUp extends BasePage {
         // Return true if passcode is not empty and the field is either readonly or disabled
         return passcodeValue !== '' && (isReadOnly || isDisabled);
     };
+
+    async selectCountry(country) {
+        await this.click(countrySelectorDropdown);
+        const countryToSelect = country;
+        await this.page.selectOption('//*[@id="root"]/div/div[2]/div/div[1]/div/div/div[1]/form/div[4]/div/div/div/div[1]/div/div/div', { label: countryToSelect });
+        // Verify that the selected option is correct
+        const selectedOption = await page.$eval('//*[@id="root"]/div/div[2]/div/div[1]/div/div/div[1]/form/div[4]/div/div/div/div[1]/div/div/div', el => el.value);
+        expect(selectedOption).toBe(countryToSelect); 
+
+    }
 
 
 
