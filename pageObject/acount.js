@@ -33,7 +33,7 @@ export const emailRequiredMsg = '//*[@id="root"]/div/div[2]/div/div[1]/div/div/d
 export const countryRequiredMsg = '//*[@id="root"]/div/div[2]/div/div[1]/div/div/div[1]/form/div[4]/div[2]'
 export const  editInfoUserName = '//*[@id="name"]'
 export const countryfield ='//*[@id="react-select-4-input"]';
-export const deleteAcountTitle = 'document.querySelector("#root > div > div.contentContainer > div > div > div:nth-child(4) > div > section > div > div:nth-child(1) > span")';
+export const deleteAcountTitle = '//span[contains(text(), "Delete your Virtua Account")]';
 export const deleteButtonIcon = '//*[@id="root"]/div/div[2]/div/div/div[3]/div/section/div/div[2]/a'
 export const acountDeletion = '//*[@id="root"]/div/div[2]/div/div/div[4]/div/div/div/h3'
 export const deleteProcessButton = '//*[@id="root"]/div/div[2]/div/div/div[4]/div/div/div/div/button[1]'

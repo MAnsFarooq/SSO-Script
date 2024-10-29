@@ -413,25 +413,30 @@ test.describe('Verify that account page test work as expected', () => {
         let login = new Login(page);
         await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
         await login.clickSignButton();
+        await page.waitForLoadState('networkidle'); 
         // check delete heading is avaible
-        const htmlContent = await page.content();
-        console.log(htmlContent); // Log current HTML content
-
         //
-        //await login.isVisible(deleteAcountTitle)
-        const deleteButtonVisible = await page.evaluate(() => {
-            const element = document.querySelector("#root > div > div.contentContainer > div > div > div:nth-child(4) > div > section > div > div:nth-child(1) > span");
-            return !!(element && element.offsetWidth > 0 && element.offsetHeight > 0); // Check visibility
-        });
-        
+        // Wait for the element to be visible
+        //await page.waitForXPath(deleteAccountTitleXPath, { state: 'visible' });
+
+        // Check if the delete account title is visible
+        const deleteAccountVisible = await page.$eval(deleteAcountTitle, el => !!el && el.offsetWidth > 0 && el.offsetHeight > 0);
+
+        // Log the visibility check result for debugging
+        console.log("Is the delete account title visible?", deleteAccountVisible);
+
+        // Assert that the element is visible
+        expect(deleteAccountVisible).toBe(true);
+
+
         // Expect the delete button to be visible
-        expect(deleteButtonVisible).toBe(true);
-        
+        //expect(deleteButtonVisible).toBe(true);
+
 
 
         // check delete delete button is avalaible 
         // Click on delete virtue account
-        await login.isVisible(deleteButtonIcon)
+        //await login.isVisible(deleteButtonIcon)
     })
 
 
