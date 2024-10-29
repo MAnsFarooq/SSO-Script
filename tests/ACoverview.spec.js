@@ -37,7 +37,19 @@ const {
     EmailAddressXpath,
     usernameErrorMsg,
     saveChangesXpath,
-    countrySelectorDropdown
+    countrySelectorDropdown,
+    emailRequiredMsg,
+    countryRequiredMsg,
+    editInfoUserName,
+    countryfield,
+    deleteAcountTitle,
+    deleteButtonIcon,
+    acountDeletion,
+    deleteProcessButton,
+    deleteACcancelButton,
+    deleationACpasscodefirls,
+    deleteContinueButton
+
 
 } = require('../pageObject/acount.js');
 
@@ -47,6 +59,7 @@ const {
     SignButtonEnableXpath,
 
 } = require('../pageObject/login.js');
+const SignUp = require('./signupclass.js');
 
 
 test.describe('Verify that account page test work as expected', () => {
@@ -312,7 +325,7 @@ test.describe('Verify that account page test work as expected', () => {
         // Verify maximum length
         expect(phoneNumberValue.length).toBeLessThanOrEqual(18);
     })
-    test.only('verify that when use dupicate Email Address it should flash ', async ({ page }) => {
+    test('verify that when use dupicate Email Address it should flash ', async ({ page }) => {
         // Log in and navigate to the relevant page (update login details or steps as necessary)
         let login = new Login(page);
         await login.fillLoginForm('TestinQAauser', 'TestinQAauser@123');
@@ -321,15 +334,107 @@ test.describe('Verify that account page test work as expected', () => {
         await login.click(edityourinfo);
         // try fill fill duplicate email address
         await login.fillInput(EmailAddressXpath, 'anasfarooq0098@gmail.com');
-        // click on the saves Changes button
+
+        let sign = new SignUp(page);
+        await sign.selectCountry('United States');
         await login.click(saveChangesXpath);
         // flash error message 
         await login.getAttribute(usernameErrorMsg, testData.userNameAlreadyExist);
-       // select country
-       let sign = new Signup;
-       await sign.selectCountry('United States');
+    });
+
+    test('verify that when in edit personal information when required is empty and saves it should flash error msg', async ({ page }) => {
+        // Log in and navigate to the relevant page (update login details or steps as necessary)
+        let login = new Login(page);
+        await login.fillLoginForm('TestinQAauser', 'TestinQAauser@123');
+        await login.clickSignButton();
+        // Go the edit personal information;
+        await login.click(edityourinfo);
+        // try saves changes without fill required fields 
+        // click on saves changes button 
+        await login.click(saveChangesXpath);
+        // flash error message
+        // email required error message
+        await login.getAttribute(emailRequiredMsg, testData.emailIsRequired);
+        // country required error message
+        await login.getAttribute(countryRequiredMsg, testData.countryIsRequired)
+    });
+    test('verify that when user tries to fill username it should be read-only and not editable', async ({ page }) => {
+        let login = new Login(page);
+        await login.fillLoginForm('TestinQAauser', 'TestinQAauser@123');
+        await login.clickSignButton();
+
+        // Go to edit personal information
+        await login.click(edityourinfo);
+
+        // Check username readonly
+        const usernameSelector = editInfoUserName; // Make sure this is defined correctly
+        const usernameElement = await page.waitForSelector(usernameSelector, { state: 'visible' });
+
+        // Use the page reference directly
+        const isReadOnly = await page.evaluate(el => el.readOnly, usernameElement);
+
+        // Assert that the username input is readonly
+        expect(isReadOnly).toBe(true);
+    });
+    test('verify that the country selector is not editable', async ({ page }) => {
+        // Log in and navigate to the relevant page
+        let login = new Login(page);
+        await login.fillLoginForm('TestinQAausers', 'TestinQAauser@123');
+        await login.clickSignButton();
+
+        // Go to edit personal information
+        await login.click(edityourinfo);
+
+        // Wait for the country selector to be visible
+        const countrySelector = 'div'; // Select the parent div
+        await page.waitForSelector(countrySelector, { state: 'visible' });
+
+        // Check if the specific country (Anguilla) is present and its read-only status
+        const isCountrySelectorReadonly = await page.evaluate(() => {
+            const div = Array.from(document.querySelectorAll('div'))
+                .find(el => el.innerText.includes('Anguilla'));
+            return div ? div.hasAttribute('disabled') : false;
+        });
+
+        // Assert that the country selector is not editable 
+        expect(isCountrySelectorReadonly).toBe(false); // Expecting it to be not editable
+
+        //  check if clicking the country selector does not allow changes
+        const isCountrySelectorClickable = await page.evaluate(() => {
+            const div = Array.from(document.querySelectorAll('div'))
+                .find(el => el.innerText.includes('Anguilla'));
+            return div ? !div.getAttribute('onclick') : true; // Check if there's no onclick attribute
+        });
+
+        expect(isCountrySelectorClickable).toBe(true); // Expecting it to not be clickable
+    });
+    test.only('Verify that In more Option delete virtue Account tille and delete button icone is Availble', async ({ page }) => {
+        // Log in and navigate to the relevant page (update login details or steps as necessary)
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        // check delete heading is avaible
+        const htmlContent = await page.content();
+        console.log(htmlContent); // Log current HTML content
+
+        //
+        //await login.isVisible(deleteAcountTitle)
+        const deleteButtonVisible = await page.evaluate(() => {
+            const element = document.querySelector("#root > div > div.contentContainer > div > div > div:nth-child(4) > div > section > div > div:nth-child(1) > span");
+            return !!(element && element.offsetWidth > 0 && element.offsetHeight > 0); // Check visibility
+        });
         
+        // Expect the delete button to be visible
+        expect(deleteButtonVisible).toBe(true);
+        
+
+
+        // check delete delete button is avalaible 
+        // Click on delete virtue account
+        await login.isVisible(deleteButtonIcon)
     })
+
+
 
 
 

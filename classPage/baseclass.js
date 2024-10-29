@@ -1,4 +1,4 @@
-const {expect} = require('@playwright/test');
+const { expect } = require('@playwright/test');
 class BasePage {
     constructor(page) {
         this.page = page;
@@ -28,25 +28,28 @@ class BasePage {
     }
 
     // Method to get text content of a specified selector
-    async getText(selector , value) {
+    async getText(selector, value) {
         await this.page.waitForSelector(selector, { state: 'visible', timeout: 10000 });
-    
+
         // Get the text content and compare it with the expected value
         const actualText = await this.page.textContent(selector);
-        console.log(`Text found: ${actualText}`); 
-        console.log("value",value)// Debugging log
+        console.log(`Text found: ${actualText}`);
+        console.log("value", value)// Debugging log
         expect(actualText).toBe(value); // Assertion to check if the text matches
     }
 
     // Method to fill input fields
     async fillInput(selector, value) {
         console.log(selector + ': ' + value);
-        await this.page.waitForSelector(selector, { state: 'visible' ,timeout :100000 }); // Ensure the input field is visible
+        await this.page.waitForSelector(selector, { state: 'visible', timeout: 100000 }); // Ensure the input field is visible
         await this.page.fill(selector, value); // Fill the input field after visibility
     }
 
     // Method to check if an attribute is set
     async getAttribute(selector, attribute) {
+        // Example: if there is a class that can uniquely identify the element
+        await this.page.waitForSelector(selector, { state: 'visible' });
+
         return await this.page.getAttribute(selector, attribute);
     }
 }

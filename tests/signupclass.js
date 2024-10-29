@@ -145,14 +145,16 @@ class SignUp extends BasePage {
     };
 
     async selectCountry(country) {
+        // Click on the dropdown to open the country selection
         await this.click(countrySelectorDropdown);
-        const countryToSelect = country;
-        await this.page.selectOption('//*[@id="root"]/div/div[2]/div/div[1]/div/div/div[1]/form/div[4]/div/div/div/div[1]/div/div/div', { label: countryToSelect });
-        // Verify that the selected option is correct
-        const selectedOption = await page.$eval('//*[@id="root"]/div/div[2]/div/div[1]/div/div/div[1]/form/div[4]/div/div/div/div[1]/div/div/div', el => el.value);
-        expect(selectedOption).toBe(countryToSelect); 
-
+        // Construct the selector for the country option
+        const countryOptionSelector = `div[class*="countrySelect__option"]:has-text("${country}")`;
+        // Wait for the country option to be visible in the dropdown
+        await this.page.waitForSelector(countryOptionSelector, { state: 'visible' });
+        await this.page.click(countryOptionSelector);
     }
+    
+    
 
 
 
