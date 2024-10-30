@@ -178,7 +178,7 @@ test.describe('User Registration', () => {
         await Login.clickOnNextButton();
         await Login.pasteSecretePasscode();
     });
-    test.only('verify that valids credentials making an account' , async ({ page }) =>{
+    test('verify that valids credentials making an account' , async ({ page }) =>{
         let Login = new SignUp(page);
         await Login.clickCreateAnAccountButton();
         await Login.fillSignUpform(testData.validUsername, testData.StrongPassword, testData.StrongPassword);

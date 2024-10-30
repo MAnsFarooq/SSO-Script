@@ -18,6 +18,7 @@ class BasePage {
     async isVisible(selector) {
         // Wait for the selector to be visible
         await this.page.waitForSelector(selector, { state: 'visible' });
+         console.log("is visible: " + selector)
         // Now check if the selector is visible
         return await this.page.isVisible(selector);
     }

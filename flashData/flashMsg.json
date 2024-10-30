@@ -18,7 +18,7 @@
     "_comment": "This is for Login",
     "loginErrorMsg":"Invalid username or password",
     "correctValidUserName":"ansfarooq04",
-    "correctValidPassword":"Ansf@rooq04",
+    "correctValidPassword":"Test@user1234",
     "in-correctUsername":"",
     "incorrectPassword":"IncorrectPass",
     "uppercasePassword":"ANSF@ROOQ04",

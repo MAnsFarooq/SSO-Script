@@ -5,6 +5,7 @@ const path = require('path');
 const Login = require('./loginclass.js');
 const Signup = require('./signupclass.js');
 
+test.setTimeout(70000);
 const testData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../flashData/flashMsg.json'), 'utf-8'));
 
 const {
@@ -48,7 +49,9 @@ const {
     deleteProcessButton,
     deleteACcancelButton,
     deleationACpasscodefirls,
-    deleteContinueButton
+    deleteContinueButton,
+    pascodeErrorMsg,
+    deletepageinitiated
 
 
 } = require('../pageObject/acount.js');
@@ -130,8 +133,11 @@ test.describe('Verify that account page test work as expected', () => {
         await expect(profilePicture).toBeVisible();
         const profileSrc = await profilePicture.getAttribute('src');
         console.log(profileSrc);
-        expect(profileSrc).toContain('jpg');
-        await page.click(uploadProfilePicture);
+
+        // Validate that the uploaded image URL contains a valid image extension
+        expect(profileSrc).toMatch(/\.(jpg|jpeg|png|gif)(\?.*)?$/); // Check for valid image extensions
+
+        //await page.click(uploadProfilePicture);
     });
     test('verify tha that edit profile will Accept only exention JPG , PNG , GIF', async ({ page }) => {
         let login = new Login(page);
@@ -317,8 +323,10 @@ test.describe('Verify that account page test work as expected', () => {
         await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
         await login.clickSignButton();
 
-        const phoneNumberValue = await page.inputValue(phoneNumberxPth);
+        //const phoneNumberValue = await page.inputValue(phoneNumberxPth);
         await login.click(edityourinfo);
+
+        const phoneNumberValue = await page.inputValue(phoneNumberxPth);
         // Verify minimum length
         expect(phoneNumberValue.length).toBeGreaterThanOrEqual(10);
 
@@ -328,7 +336,7 @@ test.describe('Verify that account page test work as expected', () => {
     test('verify that when use dupicate Email Address it should flash ', async ({ page }) => {
         // Log in and navigate to the relevant page (update login details or steps as necessary)
         let login = new Login(page);
-        await login.fillLoginForm('TestinQAauser', 'TestinQAauser@123');
+        await login.fillLoginForm('gamer52', 'Torres12!!');
         await login.clickSignButton();
         // Go the edit personal information;
         await login.click(edityourinfo);
@@ -345,7 +353,7 @@ test.describe('Verify that account page test work as expected', () => {
     test('verify that when in edit personal information when required is empty and saves it should flash error msg', async ({ page }) => {
         // Log in and navigate to the relevant page (update login details or steps as necessary)
         let login = new Login(page);
-        await login.fillLoginForm('TestinQAauser', 'TestinQAauser@123');
+        await login.fillLoginForm('gamer52', 'Torres12!!');
         await login.clickSignButton();
         // Go the edit personal information;
         await login.click(edityourinfo);
@@ -360,7 +368,7 @@ test.describe('Verify that account page test work as expected', () => {
     });
     test('verify that when user tries to fill username it should be read-only and not editable', async ({ page }) => {
         let login = new Login(page);
-        await login.fillLoginForm('TestinQAauser', 'TestinQAauser@123');
+        await login.fillLoginForm('gamer52', 'Torres12!!');
         await login.clickSignButton();
 
         // Go to edit personal information
@@ -408,36 +416,154 @@ test.describe('Verify that account page test work as expected', () => {
 
         expect(isCountrySelectorClickable).toBe(true); // Expecting it to not be clickable
     });
-    test.only('Verify that In more Option delete virtue Account tille and delete button icone is Availble', async ({ page }) => {
+    test('Verify that In more Option delete virtue Account tille and delete button icone is Availble', async ({ page }) => {
         // Log in and navigate to the relevant page (update login details or steps as necessary)
         let login = new Login(page);
         await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
         await login.clickSignButton();
-        await page.waitForLoadState('networkidle'); 
-        // check delete heading is avaible
-        //
-        // Wait for the element to be visible
-        //await page.waitForXPath(deleteAccountTitleXPath, { state: 'visible' });
-
+        await page.waitForLoadState('networkidle');;
         // Check if the delete account title is visible
         const deleteAccountVisible = await page.$eval(deleteAcountTitle, el => !!el && el.offsetWidth > 0 && el.offsetHeight > 0);
-
         // Log the visibility check result for debugging
         console.log("Is the delete account title visible?", deleteAccountVisible);
 
         // Assert that the element is visible
         expect(deleteAccountVisible).toBe(true);
+    });
+    test('Verify thay in more Option delete button is visible and cliclable and open Acount deletion page', { timeout: 70000 }, async ({ page }) => {
+        // Log in and navigate to the relevant page (update login details or steps as necessary)
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        await page.waitForLoadState('networkidle');
+        // Check if the delete button is visible
+        const deleteButtonVisible = await page.$eval(deleteButtonIcon, el => !!el && el.offsetWidth > 0 && el.offsetHeight > 0);
+        // Log the visibility check result for debugging
+        console.log("Is the delete button visible?", deleteButtonVisible);
+        // Assert that the element is visible
+        expect(deleteButtonVisible).toBe(true);
+        // click on delete button
+        await page.click(deleteButtonIcon);
+        // wait for the Acount deletion page to load
+        await page.waitForSelector(acountDeletion, { state: 'visible' });
+        // Check if the Acount deletion page is visible
+        const acountDeletionPageVisible = await page.$eval(acountDeletion, el => !!el && el.offsetWidth > 0 && el.offsetHeight > 0);
+        // Log the visibility check result for debugging
+        console.log("Is the Acount deletion page visible?", acountDeletionPageVisible);
+        // Assert that the element is visible
+        expect(acountDeletionPageVisible).toBe(true);
+    });
+    test('verify that in the deletion page have two option cancel button and proceed button', async ({ page }) => {
+        // Log in and navigate to the relevant page (update login details or steps as necessary)
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        await page.waitForLoadState('networkidle');
+        // click on delete button
+        await page.click(deleteButtonIcon);
+        // wait for the Acount deletion page to load
+        await page.waitForSelector(acountDeletion, { state: 'visible' });
+        // Check if the two options (cancel and proceed) are visible
+        await login.isVisible(deleteProcessButton);
+        await login.isVisible(deleteACcancelButton);
 
-
-        // Expect the delete button to be visible
-        //expect(deleteButtonVisible).toBe(true);
-
-
-
-        // check delete delete button is avalaible 
-        // Click on delete virtue account
-        //await login.isVisible(deleteButtonIcon)
+    });
+    test('verify that in the deletion Page when click on the proceed button it should go to the secrete passcode field ,', async ({ page }) => {
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        await page.waitForLoadState('networkidle');
+        // click on delete button
+        await page.click(deleteButtonIcon);
+        // wait for the Acount deletion page to load
+        await page.waitForSelector(acountDeletion, { state: 'visible' });
+        // Check if the two options (cancel and proceed) are visible
+        await login.click(deleteProcessButton);
+        await login.isVisible(deleationACpasscodefirls);
     })
+    test('verify that when enter In valid passcode in passcode field for deletion account it should flash error ', async ({ page }) => {
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        await page.waitForLoadState('networkidle');
+        // click on delete button
+        await page.click(deleteButtonIcon);
+        // wait for the Acount deletion page to load
+        await page.waitForSelector(acountDeletion, { state: 'visible' });
+        // Check if the two options (cancel and proceed) are visible
+        await login.click(deleteProcessButton);
+        // fill invalid invalid passcode 
+        await login.fillInput(deleationACpasscodefirls, 'fasdfdsfdsfsafs');
+        // click on the continoue button
+        const continueButton = page.locator('button', { hasText: 'Continue' });
+        // Click the continue button
+        await continueButton.click();
+
+        // check assert error message ;
+
+        await login.getAttribute(pascodeErrorMsg, 'Invalid Secret Passcode')
+
+    });
+    test('verify that when click cancel is should back to Account Overview page', async ({ page }) => {
+        let login = new Login(page);
+        await login.fillLoginForm('gamer51', 'Torres12!!');
+        await login.clickSignButton();
+        await page.waitForLoadState('networkidle');
+        // click on delete button
+        await page.click(deleteButtonIcon);
+        // wait for the Acount deletion page to load
+        await page.waitForSelector(acountDeletion, { state: 'visible' });
+        // Check if the two options (cancel and proceed) are visible
+        await login.click(deleteACcancelButton);
+        // Check if the Account Overview page is visible
+        await login.isVisible(accountOverViewXpath);
+    });
+    test('verify that when enter valid passcode for delection account click confirm button is should go the dele', async ({ page }) => {
+        let login = new Login(page);
+        await login.fillLoginForm('gamer51', 'Torres12!!');
+        await login.clickSignButton();
+        await page.waitForLoadState('networkidle');
+
+        // Navigate to the profile management or secret passcode section
+        await login.click(headerDropdownMenu); // Adjust the selector for the dropdown
+        await login.click(dropDownSecretePasscode);
+        await login.click(genertasecretPasscodeButton);
+        // Wait for the "Copy Passcode" button to be visible and clickable
+        await login.isVisible(copyPasscodeCSSSelector)
+        // // Click the "Copy Passcode" button
+        await login.click(copyPasscodeCSSSelector);
+        const clipboardText = await page.evaluate(async () => await navigator.clipboard.readText());
+        console.log(clipboardText)
+        await login.click(nextButtonCSSSelector);
+        // fill the passcode in the secrete passcode field;
+        // click on the confirm button 
+        await login.click(confirmButtonCSSSelector);
+        // after click on the confirm button it confirm page section
+        await page.focus(fillSecetePasscodeCssSelector);
+        await login.fillInput(fillSecetePasscodeCssSelector, clipboardText);
+        /////
+        await login.click(confirmButtonCSSSelector);
+        // click on delete button
+        await page.click(deleteButtonIcon);
+        // wait for the Acount deletion page to load
+        await page.waitForSelector(acountDeletion, { state: 'visible' });
+        // Check if the two options (cancel and proceed) are visible
+        await login.click(deleteProcessButton);
+        await login.fillInput(deleationACpasscodefirls, clipboardText);
+        const continueButton = page.locator('button', { hasText: 'Continue' });
+        // Click the continue button
+        await continueButton.click();
+
+        await login.isVisible(deletepageinitiated)
+
+
+        //
+    })
+
+
+
+
+
 
 
 

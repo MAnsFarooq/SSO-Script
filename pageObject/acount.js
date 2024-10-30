@@ -21,7 +21,7 @@ export const confirmButtonCSSSelector = 'button.w-100.text-uppercase:has-text("C
 export const fillSecetePasscodeCssSelector = 'input[name="passcode"]';
 export const confirmMsgCssSelector = 'p.mb-0.mt-3';
 export const flashMsgOfinvalidPasscode = 'h3.title.md.text-capitalize.mb-5';
-export const edityourinfo = '//*[@id="root"]/div/div[2]/div/div/div[2]/div/div/a'//*[@id="root"]/div/div[2]/div/div/div[2]/div/div/a
+export const edityourinfo =  'a:has(img[alt="icon"])'//*[@id="root"]/div/div[2]/div/div/div[2]/div/div/a
 export const editpersomalinformation = '//*[@id="root"]/div/div[2]/div/div[1]/div/div/div[1]/h3'
 export const editProfileCrossButton = '//*[@id="root"]/div/div[2]/div/div[1]/div/div/div[2]/img';
 export const  phoneNumberxPth = '//*[@id="number"]'
@@ -34,9 +34,11 @@ export const countryRequiredMsg = '//*[@id="root"]/div/div[2]/div/div[1]/div/div
 export const  editInfoUserName = '//*[@id="name"]'
 export const countryfield ='//*[@id="react-select-4-input"]';
 export const deleteAcountTitle = '//span[contains(text(), "Delete your Virtua Account")]';
-export const deleteButtonIcon = '//*[@id="root"]/div/div[2]/div/div/div[3]/div/section/div/div[2]/a'
-export const acountDeletion = '//*[@id="root"]/div/div[2]/div/div/div[4]/div/div/div/h3'
-export const deleteProcessButton = '//*[@id="root"]/div/div[2]/div/div/div[4]/div/div/div/div/button[1]'
-export const deleteACcancelButton= '//*[@id="root"]/div/div[2]/div/div/div[4]/div/div/div/div/button[2]'
-export const deleationACpasscodefirls = '//*[@id="root"]/div/div[2]/div/div/div[4]/div/div/div[2]/div/div/div/div/div/div/form/div/div/input'
+export const deleteButtonIcon = 'a.text-danger'
+export const acountDeletion = 'text=Account Deletion'
+export const deleteProcessButton = 'text=PROCEED'
+export const deleteACcancelButton= 'text=CANCEL'
+export const deleationACpasscodefirls = 'input[placeholder="Secret Passcode"]';
 export const deleteContinueButton = '//*[@id="root"]/div/div[2]/div/div/div[4]/div/div/div[2]/div/div/div/div/div/div/form/button';
+export const pascodeErrorMsg = 'div.error'
+export const deletepageinitiated = 'h3:has-text("Deletion Initiated")'  

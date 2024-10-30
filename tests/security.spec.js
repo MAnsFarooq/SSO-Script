@@ -1,0 +1,277 @@
+const {
+    securityTabLink,
+    securityPasswordLabel,
+    securityTwoFAButton,
+    securityUpdatePasswordLink,
+    securityEnableTwoFALink,
+    securitySecretPasscodeField,
+    securityNewPasswordField,
+    securityConfirmPasswordField,
+    securityContinueButton,
+    securityCancelButton,
+    securityInvalidpasscode,
+    securitywithoutPasscode,
+    signIntovirtuaAccount,
+    passwordMistachError,
+    shortPasswordError,
+    passwordvalidationMsgs
+} = require('../pageObject/security');
+
+const {
+    headerDropdownMenu,
+    dropDownSecretePasscode,
+    genertasecretPasscodeButton,
+    nextButtonCSSSelector,
+    confirmButtonCSSSelector,
+    copyPasscodeCSSSelector,
+    fillSecetePasscodeCssSelector,
+
+} = require('../pageObject/acount.js')
+
+const { test, expect } = require('@playwright/test');
+
+const Login = require('./loginclass.js');
+const Signup = require('./signupclass.js');
+const fs = require('fs');
+const path = require('path');
+const testData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../flashData/flashMsg.json'), 'utf-8'));
+test.setTimeout(70000);
+
+test.describe('Security Settings', () => {
+    let page;
+
+    test.beforeEach(async ({page}) => {
+        await page.goto('https://profile.bimtvist.com', { waitUntil: 'networkidle' });
+    });
+
+    test('verify That when click on security Tab is should go the security setting Page', async ( {page}) => {
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        await login.click(securityTabLink);
+        //verify that page have security modes
+        await login.isVisible(securityPasswordLabel)
+
+    });
+    test('verify  that In security Settings there are option available Password and 2-step verfication', async ( {page}) =>{
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        await login.click(securityTabLink);
+        //verify that page have security modes
+        await login.isVisible(securityPasswordLabel)
+        await login.isVisible(securityTwoFAButton)
+    });
+    test('verify that update password and 2FA button is avaiable ' , async({page}) =>{
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        await login.click(securityTabLink);
+        //verify that page have security modes
+        await login.isVisible(securityPasswordLabel)
+        await login.isVisible(securityTwoFAButton)
+        //verify that button update password and 2FA button is avaiable
+        await login.isVisible(securityUpdatePasswordLink);
+        await login.isVisible(securityEnableTwoFALink);
+    });
+    test('verify that when click on the update password it should be secrete passcode field new password and confirm password field' , async({page}) =>{
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        await login.click(securityTabLink);
+        //verify that page have security modes
+        await login.isVisible(securityPasswordLabel)
+        await login.isVisible(securityTwoFAButton)
+        //click on update password button
+        await page.click(securityUpdatePasswordLink);
+        //verify that page have secrete passcode field new password and confirm password field
+        await login.isVisible(securitySecretPasscodeField)
+        await login.isVisible(securityNewPasswordField)
+        await login.isVisible(securityConfirmPasswordField)
+    });
+    test('verify that update password with invalid passcode it should should flash error ' , async({page}) =>{
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        await login.click(securityTabLink);
+        //verify that page have security modes
+        await login.isVisible(securityPasswordLabel)
+        await login.isVisible(securityTwoFAButton)
+        //click on update password button
+        await page.click(securityUpdatePasswordLink);
+        //fill invalid passcode
+        await page.fill(securitySecretPasscodeField, "dkjewdhwhwhdhjd");
+        await page.fill(securityNewPasswordField, "Test@user1234");
+        await page.fill(securityConfirmPasswordField, 'Test@user1234');
+        await page.click(securityContinueButton);
+        //verify that error message is displayed
+        await login.getAttribute(securityInvalidpasscode , 'Invalid passcode!')
+    });
+    test('verify that update password without entering passcode it should flash error' , async({page}) =>{
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        await login.click(securityTabLink);
+        //verify that page have security modes
+        await login.isVisible(securityPasswordLabel)
+        await login.isVisible(securityTwoFAButton)
+        //click on update password button
+        await page.click(securityUpdatePasswordLink);
+        //fill invalid passcode
+        await page.fill(securityNewPasswordField, "Test@user1234");
+        await page.fill(securityConfirmPasswordField, 'Test@user1234');
+        await page.click(securityContinueButton);
+        ///checkl asset error mesage
+        await login.getAttribute(securitywithoutPasscode ,'Passcode is required' );
+    });
+    test('verify that update password with valid Passcode with new password and confirm password  it should update password  and go to login page ' , async({page}) =>{
+        let login = new Login(page);
+        await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
+        await login.clickSignButton();
+        await login.click(securityTabLink);
+        //verify that page have security modes
+        await login.isVisible(securityPasswordLabel)
+        await login.isVisible(securityTwoFAButton)
+        //click on update password button
+        await page.click(securityUpdatePasswordLink);
+
+
+        await login.click(headerDropdownMenu); // Adjust the selector for the dropdown
+        await login.click(dropDownSecretePasscode);
+        await login.click(genertasecretPasscodeButton);
+        // Wait for the "Copy Passcode" button to be visible and clickable
+        await login.isVisible(copyPasscodeCSSSelector)
+        // // Click the "Copy Passcode" button
+        await login.click(copyPasscodeCSSSelector);
+        const clipboardText = await page.evaluate(async () => await navigator.clipboard.readText());
+        console.log(clipboardText)
+
+        await login.click(nextButtonCSSSelector);
+        // fill the passcode in the secrete passcode field;
+        // click on the confirm button 
+        await page.focus(fillSecetePasscodeCssSelector);
+        await login.fillInput(fillSecetePasscodeCssSelector, clipboardText);
+        await login.click(confirmButtonCSSSelector);
+        //fill invalid passcode
+        await page.fill(securitySecretPasscodeField,clipboardText);
+        await page.fill(securityNewPasswordField, "Test@user1234");
+        await page.fill(securityConfirmPasswordField, 'Test@user1234');
+        await page.click(securityContinueButton);
+
+        await page.isVisible(signIntovirtuaAccount)
+    })
+    test('verify that update password generate an error if message ' , async({page}) =>{
+        let login = new Login(page);
+        await login.fillLoginForm('gamer101', 'Test@user1234');
+        await login.clickSignButton();
+        await login.click(securityTabLink);
+        //verify that page have security modes
+        await login.isVisible(securityPasswordLabel)
+        await login.isVisible(securityTwoFAButton)
+        //click on update password button
+        await page.click(securityUpdatePasswordLink);
+
+
+        await login.click(headerDropdownMenu); // Adjust the selector for the dropdown
+        await login.click(dropDownSecretePasscode);
+        await login.click(genertasecretPasscodeButton);
+        // Wait for the "Copy Passcode" button to be visible and clickable
+        await login.isVisible(copyPasscodeCSSSelector)
+        // // Click the "Copy Passcode" button
+        await login.click(copyPasscodeCSSSelector);
+        const clipboardText = await page.evaluate(async () => await navigator.clipboard.readText());
+        console.log(clipboardText)
+
+        await login.click(nextButtonCSSSelector);
+        // fill the passcode in the secrete passcode field;
+        // click on the confirm button 
+        await page.focus(fillSecetePasscodeCssSelector);
+        await login.fillInput(fillSecetePasscodeCssSelector, clipboardText);
+        await login.click(confirmButtonCSSSelector);
+        //fill invalid passcode
+        await page.fill(securitySecretPasscodeField,clipboardText);
+        await page.fill(securityNewPasswordField, "Test@user1234");
+        await page.fill(securityConfirmPasswordField, 'Test@user123');
+        await page.click(securityContinueButton);
+
+        await page.getAttribute(passwordMistachError , 'New Password and Confirm Password Must Match');
+
+    })
+    test('verify that update password lower limit password it should error if password shorter than ' , async({page}) =>{
+        let login = new Login(page);
+        await login.fillLoginForm('gamer101', 'Test@user1234');
+        await login.clickSignButton();
+        await login.click(securityTabLink);
+        //verify that page have security modes
+        await login.isVisible(securityPasswordLabel)
+        await login.isVisible(securityTwoFAButton)
+        //click on update password button
+        await page.click(securityUpdatePasswordLink);
+
+
+        await login.click(headerDropdownMenu); // Adjust the selector for the dropdown
+        await login.click(dropDownSecretePasscode);
+        await login.click(genertasecretPasscodeButton);
+        // Wait for the "Copy Passcode" button to be visible and clickable
+        await login.isVisible(copyPasscodeCSSSelector)
+        // // Click the "Copy Passcode" button
+        await login.click(copyPasscodeCSSSelector);
+        const clipboardText = await page.evaluate(async () => await navigator.clipboard.readText());
+        console.log(clipboardText)
+
+        await login.click(nextButtonCSSSelector);
+        // fill the passcode in the secrete passcode field;
+        // click on the confirm button 
+        await page.focus(fillSecetePasscodeCssSelector);
+        await login.fillInput(fillSecetePasscodeCssSelector, clipboardText);
+        await login.click(confirmButtonCSSSelector);
+        //fill invalid passcode
+        await page.fill(securitySecretPasscodeField,clipboardText);
+        await page.fill(securityNewPasswordField, "Test@");
+        await page.fill(securityConfirmPasswordField, 'Test@');
+        await page.click(securityContinueButton);
+
+        await page.getAttribute( shortPasswordError, 'New Password and Confirm Password Must Match');
+
+    });
+    test.only('veriy update password validation if password have no special characters and capptials and small is should generate error' , async({page}) =>{
+        let login = new Login(page);
+        await login.fillLoginForm('gamer101', 'Test@user1234');
+        await login.clickSignButton();
+        await login.click(securityTabLink);
+        //verify that page have security modes
+        await login.isVisible(securityPasswordLabel)
+        await login.isVisible(securityTwoFAButton)
+        //click on update password button
+        await page.click(securityUpdatePasswordLink);
+
+
+        await login.click(headerDropdownMenu); // Adjust the selector for the dropdown
+        await login.click(dropDownSecretePasscode);
+        await login.click(genertasecretPasscodeButton);
+        // Wait for the "Copy Passcode" button to be visible and clickable
+        await login.isVisible(copyPasscodeCSSSelector)
+        // // Click the "Copy Passcode" button
+        await login.click(copyPasscodeCSSSelector);
+        const clipboardText = await page.evaluate(async () => await navigator.clipboard.readText());
+        console.log(clipboardText)
+
+        await login.click(nextButtonCSSSelector);
+        // fill the passcode in the secrete passcode field;
+        // click on the confirm button 
+        await page.focus(fillSecetePasscodeCssSelector);
+        await login.fillInput(fillSecetePasscodeCssSelector, clipboardText);
+        await login.click(confirmButtonCSSSelector);
+        //fill invalid passcode
+        await page.fill(securitySecretPasscodeField,clipboardText);
+        await page.fill(securityNewPasswordField, "tests123");
+        await page.fill(securityConfirmPasswordField, 'tests123');
+        await page.click(securityContinueButton);
+
+       await page.isVisible();
+    })
+
+    
+
+  
+});
