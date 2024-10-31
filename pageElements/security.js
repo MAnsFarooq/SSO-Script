@@ -16,7 +16,7 @@ export const securityConfirmPasswordField = 'input[type="password"][placeholder=
 // Buttons
 export const securityContinueButton = 'button.custom-btn.lg.primary.w-100.mb-3[type="submit"]';
 export const securityCancelButton = 'button.custom-btn.lg.secondary.w-100';
-///
+export const okButton = 'button.custom-btn.lg.primary:has-text("Ok")';///
 
 export const  securityInvalidpasscode='div:has-text("Invalid passcode!")';
 export const securitywithoutPasscode = 'div:has-text("Passcode is required")'

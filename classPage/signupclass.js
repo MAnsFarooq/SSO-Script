@@ -18,11 +18,11 @@ const {
     secretPasscodeFieldIndropDown,
     countrySelectorDropdown
 
-} = require('../pageObject/signUp.js');
+} = require('../pageElements/signUp.js');
 
 const { expect } = require('@playwright/test');
 
-const BasePage = require('../classPage/baseclass')
+const BasePage = require('../classPage/baseclass.js')
 
 class SignUp extends BasePage {
     constructor(page) {
@@ -41,6 +41,8 @@ class SignUp extends BasePage {
     };
     async togglePasswordVisibility() {
         await this.click(eyeIconPasswordXpath);
+        const  typeAttribute =await this.getAttribute(Password, 'type');
+        expect(typeAttribute).toBe('text')
         return await this.getAttribute(Password, 'type') === 'text'
             ? await this.page.inputValue(Password)
             : '';
@@ -52,6 +54,8 @@ class SignUp extends BasePage {
 
     async toogleConfirmPassVisibility() {
         await this.click(eyeIconConfirmPassXpath);
+        const  typeAttribute =await this.getAttribute(ConfirmPassword, 'type');
+        expect(typeAttribute).toBe('text')
         return await this.getAttribute(ConfirmPassword, 'type') === 'text'
             ? await this.page.inputValue(ConfirmPassword)
             : '';

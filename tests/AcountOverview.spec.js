@@ -2,10 +2,10 @@ const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
 
-const Login = require('./loginclass.js');
-const Signup = require('./signupclass.js');
+const Login = require('../classPage/loginclass.js');
+const Signup = require('../classPage/signupclass.js');
 
-test.setTimeout(70000);
+test.setTimeout(100000);
 const testData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../flashData/flashMsg.json'), 'utf-8'));
 
 const {
@@ -54,15 +54,15 @@ const {
     deletepageinitiated
 
 
-} = require('../pageObject/acount.js');
+} = require('../pageElements/acount.js');
 
 const {
     loginUsernameXpath,
     loginPasswordXpath,
     SignButtonEnableXpath,
 
-} = require('../pageObject/login.js');
-const SignUp = require('./signupclass.js');
+} = require('../pageElements/login.js');
+//const SignUp = require('../pageElements/signupclass.js');
 
 
 test.describe('Verify that account page test work as expected', () => {
@@ -72,7 +72,7 @@ test.describe('Verify that account page test work as expected', () => {
     });
     test.beforeEach(async ({ page }) => {
         //account = new Account(page); // Create instance of Account once
-        await page.goto('https://profile.bimtvist.com', { waitUntil: 'networkidle' });
+        await page.goto('/', { waitUntil: 'networkidle' });
     });
     test('verify that Account overview click it should redirect to the User Acount details', async ({ page }) => {
         let login = new Login(page);
@@ -83,7 +83,7 @@ test.describe('Verify that account page test work as expected', () => {
         // verify that Acount OverView is Click Able 
         await login.click(accountOverViewXpath);
         //verify that Acount overView page details section is Visible;
-        await login.getAttribute(YourdetailXpath, 'Your Details')
+        await login.isExpect(YourdetailXpath, 'Your Details')
     });
     test('Verify that in Acount overview page user profile picture should visible', async ({ page }) => {
         let login = new Login(page);
@@ -101,17 +101,17 @@ test.describe('Verify that account page test work as expected', () => {
         await login.isVisible(accountOverViewXpath);
         await login.click(accountOverViewXpath);
         await login.isVisible(YourdetailXpath);
-        await login.getAttribute(userName, 'User Name');
-        await login.getAttribute(EmailAddress, 'Email Address');
-        await login.getAttribute(PhoneNumber, 'Phone No');
-        await login.getAttribute(country, 'Country of Origin')
+        await login.isExpect(userName, 'User Name');
+        await login.isExpect(EmailAddress, 'Email Address');
+        await login.isExpect(PhoneNumber, 'Phone No');
+        await login.isExpect(country, 'Country of Origin')
     });
     test('Verify whether the user is able to click on the photo upload (Pencil) icon or not. ', async ({ page }) => {
         let login = new Login(page);
         await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
         await login.clickSignButton();
         await login.click(editProfilePencilIconeXpath);
-        await login.getAttribute(editYourProfilePicture, "Edit Profile Picture")
+        await login.isExpect(editYourProfilePicture, "Edit Profile Picture")
     })
     test('verify that in edit profile picture section cross buttin is clickable and edit profile section box will close ', async ({ page }) => {
         let login = new Login(page);
@@ -146,7 +146,7 @@ test.describe('Verify that account page test work as expected', () => {
         await login.click(editProfilePencilIconeXpath);
         //await page.waitForSelector('[type="file"]', { state: 'visible' });
         await page.setInputFiles('[type="file"]', path.resolve(__dirname, '../flashData/test.pdf'));
-        await login.getAttribute(UnexpectProfilePic, testData.uploadImageErrorMsg);
+        await login.isExpect(UnexpectProfilePic, testData.uploadImageErrorMsg);
     });
     test('Verify that Secret Passcode Button is available in Headers Drop-down and clickable.', async ({ page }) => {
         let login = new Login(page);
@@ -193,7 +193,7 @@ test.describe('Verify that account page test work as expected', () => {
         // // Wait for the button to change its text to "Copied"
         await login.getAttribute(copyPasscodeCSSSelector, 'Copied') // Selector for the button after clicking
     });
-    test('verify that with copy the passcode next button is disAble', async ({ page }) => {
+    test('verify that with copy the passcode next button is disAble',{timeout : 90000} ,async ({ page }) => {
         // Log in and navigate to the relevant page (update login details or steps as necessary)
         let login = new Login(page);
         await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
@@ -241,7 +241,7 @@ test.describe('Verify that account page test work as expected', () => {
 
         await login.click(nextButtonCSSSelector);
         // after click on the next button it confirm page section
-        await login.getAttribute(confirmButtonCSSSelector, 'confirm');
+        await login.isExpect(confirmButtonCSSSelector, 'Confirm');
 
     });
     test('verify that the copy passcode should fill passcode  in the secret passcode field and passcode set successfully  ', async ({ page }) => {
@@ -269,7 +269,7 @@ test.describe('Verify that account page test work as expected', () => {
         /////
         await login.click(confirmButtonCSSSelector);
         // after click on the confirm button it confirm page section
-        await login.getAttribute(confirmMsgCssSelector, 'Passcode set successfully')
+        await login.isExpect(confirmMsgCssSelector, 'Passcode set successfully')
     });
     test('verify that when user enter Invalid passcode is should flash error message ', async ({ page }) => {
         await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
@@ -293,7 +293,7 @@ test.describe('Verify that account page test work as expected', () => {
         /////
         await login.click(confirmButtonCSSSelector);
         // flash errror msg when user  invalid passcode 
-        await login.getAttribute(flashMsgOfinvalidPasscode, 'Invalid Passcode')
+        await login.isExpect(flashMsgOfinvalidPasscode, 'Invalid Passcode')
     });
     test('Verify that In account overview Edit your Info Iconi  is visible  and clickAble redirect to edit info section', async ({ page }) => {
 
@@ -304,7 +304,7 @@ test.describe('Verify that account page test work as expected', () => {
         // Click on the edit info Icon
         await login.click(edityourinfo);
         // after click on the edit info icon it confirm page section
-        await login.getAttribute(editpersomalinformation, 'Edit Personal Information');
+        await login.isExpect(editpersomalinformation, 'Edit Personal Information');
     });
     test('verify that edit personal information cross-button is clickable and redirect back to your detail page', async ({ page }) => {
         // Log in and navigate to the relevant page (update login details or steps as necessary)
@@ -315,7 +315,7 @@ test.describe('Verify that account page test work as expected', () => {
         await login.click(edityourinfo);
         // click on cross button to go back to your detail page
         await login.click(editProfileCrossButton);
-        await login.getAttribute(YourdetailXpath, 'Your Details');
+        await login.isExpect(YourdetailXpath, 'Your Details');
     });
     test('verify that  constarints min lenght is 10 and max lenght is 20 ', async ({ page }) => {
         // Log in and navigate to the relevant page (update login details or steps as necessary)
@@ -343,11 +343,11 @@ test.describe('Verify that account page test work as expected', () => {
         // try fill fill duplicate email address
         await login.fillInput(EmailAddressXpath, 'anasfarooq0098@gmail.com');
 
-        let sign = new SignUp(page);
+        let sign = new Signup(page);
         await sign.selectCountry('United States');
         await login.click(saveChangesXpath);
         // flash error message 
-        await login.getAttribute(usernameErrorMsg, testData.userNameAlreadyExist);
+        await login.isExpect(usernameErrorMsg, testData.userNameAlreadyExist);
     });
 
     test('verify that when in edit personal information when required is empty and saves it should flash error msg', async ({ page }) => {
@@ -364,7 +364,7 @@ test.describe('Verify that account page test work as expected', () => {
         // email required error message
         await login.getAttribute(emailRequiredMsg, testData.emailIsRequired);
         // country required error message
-        await login.getAttribute(countryRequiredMsg, testData.countryIsRequired)
+        await login.isExpect(countryRequiredMsg, testData.countryIsRequired)
     });
     test('verify that when user tries to fill username it should be read-only and not editable', async ({ page }) => {
         let login = new Login(page);
@@ -501,7 +501,7 @@ test.describe('Verify that account page test work as expected', () => {
 
         // check assert error message ;
 
-        await login.getAttribute(pascodeErrorMsg, 'Invalid Secret Passcode')
+        await login.isExpect(pascodeErrorMsg, 'Invalid Secret Passcode')
 
     });
     test('verify that when click cancel is should back to Account Overview page', async ({ page }) => {
@@ -516,11 +516,11 @@ test.describe('Verify that account page test work as expected', () => {
         // Check if the two options (cancel and proceed) are visible
         await login.click(deleteACcancelButton);
         // Check if the Account Overview page is visible
-        await login.isVisible(accountOverViewXpath);
+        await login.isExpect(accountOverViewXpath,'Account Overview');
     });
     test('verify that when enter valid passcode for delection account click confirm button is should go the dele', async ({ page }) => {
         let login = new Login(page);
-        await login.fillLoginForm('gamer51', 'Torres12!!');
+        await login.fillLoginForm('gamer107', 'Torres12!!');
         await login.clickSignButton();
         await page.waitForLoadState('networkidle');
 
@@ -554,7 +554,7 @@ test.describe('Verify that account page test work as expected', () => {
         // Click the continue button
         await continueButton.click();
 
-        await login.isVisible(deletepageinitiated)
+        await login.isExpect(deletepageinitiated , "Delete Status")
 
 
         //

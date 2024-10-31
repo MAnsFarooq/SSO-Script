@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const  Login  = require('./loginclass.js');
+const  Login  = require('../classPage/loginclass.js');
 const fs = require('fs');
 const path = require('path');
 const testData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../flashData/flashMsg.json'), 'utf-8'));
@@ -12,11 +12,8 @@ const {
     accountOvewrviewXpath,
     errorMsg,
     disableSignButton
-} = require('../pageObject/login.js');
+} = require('../pageElements/login.js');
 //console.log(testData)
-
-// golobaly set for testing 70Seconds
-test.setTimeout(700000);
 
 test.describe('Verify that Sigun-In test work as expected', () => {
     //let login ;
@@ -24,13 +21,13 @@ test.describe('Verify that Sigun-In test work as expected', () => {
         console.log(" Tests is starting all test are running parallel");
     });
     test.beforeEach(async ({ page }) => {
-        await page.goto('https://profile.bimtvist.com', { waitUntil: 'networkidle' });
+        await page.goto('/', { waitUntil: 'networkidle' });
     });
     test('TC-SSO 33 Verify that Loggind In with Correct username ' , async({page}) =>{
         let login = new Login(page)
         await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
         await login.clickSignButton();
-        await login.isVisible(accountOvewrviewXpath);
+        await login.isExpect(accountOvewrviewXpath , 'Account Overview');
     });
     test('Verify that when again loggin It will redirect to profile management ' , async ({page}) =>{
         let login = new Login(page)
@@ -38,13 +35,13 @@ test.describe('Verify that Sigun-In test work as expected', () => {
         await login.clickSignButton();
         await login.isVisible(accountOvewrviewXpath);
         await page.goto('https://profile.bimtvist.com', { waitUntil: 'networkidle' });
-        await login.isVisible(accountOvewrviewXpath);
+        await login.isExpect(accountOvewrviewXpath , 'Account Overview');
     });
     test("TC-SSO37 Verift that login with correct username and incorrect password flash error msg" , async ({page}) =>{
         let login = new Login(page)
         await login.fillLoginForm(testData.correctValidUserName, testData.incorrectPassword);
         await login.clickSignButton();
-        await login.getText(errorMsg,testData.loginErrorMsg);  
+        await login.isExpect(errorMsg,testData.loginErrorMsg);  
     });
     test("TC-SSO 39 verify Sign Button is disabled when username  field is empty " , async ({page}) =>{
         let login = new Login(page)
@@ -66,13 +63,13 @@ test.describe('Verify that Sigun-In test work as expected', () => {
         let login = new Login(page)
         await login.fillLoginForm(testData.correctValidUserName, testData.uppercasePassword);
         await login.clickSignButton();
-        await login.getText(errorMsg, testData.loginErrorMsg);
+        await login.isExpect(errorMsg, testData.loginErrorMsg);
     });
     test('verify that sign Up functionaly when enter coorect password In lower it should flash error msg' , async({page}) =>{
         let login = new Login(page)
         await login.fillLoginForm(testData.correctValidUserName, testData.lowercasePassword);
         await login.clickSignButton();
-        await login.getText(errorMsg, testData.loginErrorMsg);
+        await login.isExpect(errorMsg, testData.loginErrorMsg);
     });
     test('verify when navigate to the webpage by default cursor should remain on the username field' , async ({page}) =>{
         await page.waitForSelector(loginUsernameXpath);
@@ -87,9 +84,12 @@ test.describe('Verify that Sigun-In test work as expected', () => {
     test('verify that password is masked when typing in the password field' , async({page}) =>{
         let login = new Login(page)
         await login.fillLoginForm('', testData.correctValidPassword);
-        await login.getAttribute(loginPasswordXpath, 'password')
+        const passwordType = await login.getAttribute(loginPasswordXpath, 'type');
+        // Assert that the type is 'password' (which indicates that the password is masked)
+        expect(passwordType).toBe('password');
+    
     });
-    test('veify that password is eye icone show/hide password' , async({page}) =>{
+    test('veify that password is eye icon show/hide password' , async({page}) =>{
         let login = new Login(page)
         await login.fillLoginForm('', testData.correctValidPassword);
         await login.togglePasswordVisibility();

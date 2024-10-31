@@ -1,9 +1,9 @@
-const SignUp = require('./signupclass.js');
+const SignUp = require('../classPage/signupclass');
 const fs = require('fs');
 const { test, expect } = require('@playwright/test');
 const path = require('path');
 const testData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../flashData/flashMsg.json'), 'utf-8'));
-console.log(testData)
+//
 
 const {
     UserName,
@@ -25,38 +25,41 @@ const {
     secretPasscodePageXpath,
     acountOverViewPageXpath,
 
-} = require('../pageObject/signUp.js')
+} = require('../pageElements/signUp.js')
 
 console.log("===>", UserName);
-test.setTimeout(700000);
+
 
 test.describe('User Registration', () => {
-    let signup;
-
+//
     test.beforeAll(async () => {
         console.log("Running tests");
     });
 
     test.beforeEach(async ({ page }) => {
-        signup = new SignUp(page); // Create instance of SignUp once
+       //let  signup = new SignUp(page); // Create instance of SignUp once
         console.log("Navigating to the web page");
-        await signup.navigate('https://profile.bimtvist.com');
+       await page.goto('/')
     });
 
     // Test to verify that the username field is present
-    test('Verify that the username field is present', async () => {
+    test('Verify that the username field is present', async ({page}) => {
+        let signup = new SignUp(page)
         console.log('UserName:', UserName);
         await signup.clickCreateAnAccountButton();
         const isVisible = await signup.isVisible(UserName);
+        // Expect For Pass Test
         console.log('Is UserName visible:', isVisible); // Log the visibility status
     });
-    test('verify That Password Field is password', async ({ page }) => {
+    test('verify That Password Field is password and visiible', async ({ page }) => {
+        let signup = new SignUp(page)
         await signup.clickCreateAnAccountButton();
         const isVisible = await signup.isVisible(Password);
         console.log('Is Password visible:', isVisible);
         expect(await signup.getAttribute(Password, 'type')).toBe('password');
     });
     test('verify that confirm field is present', async ({ page }) => {
+        let signup = new SignUp(page)
         await signup.clickCreateAnAccountButton();
         const isVisible = await signup.isVisible(ConfirmPassword);
         console.log('Is ConfirmPassword visible:', isVisible);
@@ -78,7 +81,7 @@ test.describe('User Registration', () => {
         await Login.clickCreateAnAccountButton();
         await Login.fillSignUpform(testData.userGreatorThan20, testData.StrongPassword, testData.StrongPassword);
         await Login.submitForm(SubmitSignForm);
-        await Login.getText(UserNameErrorMsg, testData.usernameErrorMsg);
+        await Login.isExpect(UserNameErrorMsg, testData.usernameErrorMsg);
 
     })
     test('verify that username less then 6 characters It should flash an error msg', async ({ page }) => {
@@ -87,7 +90,7 @@ test.describe('User Registration', () => {
         await Login.fillSignUpform(testData.usernamelessThan6, testData.StrongPassword, testData.StrongPassword);
         await Login.submitForm(SubmitSignForm);
         console.log(testData.UserNameErrorMsg);
-        await Login.getText(UserNameErrorMsg, testData.usernameErrorMsg);
+        await Login.isExpect(UserNameErrorMsg, testData.usernameErrorMsg);
     })
     test('verify that username work with 6 characters ', async ({ page }) => {
         let Login = new SignUp(page);
@@ -100,7 +103,7 @@ test.describe('User Registration', () => {
         await Login.clickCreateAnAccountButton();
         await Login.fillSignUpform(testData.verifyUsername, testData.passwordLessThan8, testData.passwordLessThan8);
         await Login.submitForm(SubmitSignForm);
-        await Login.getText(passwordErrorMsg, testData.passwordErrorMsg);
+        await Login.isExpect(passwordErrorMsg, testData.passwordErrorMsg);
     });
     test('verify that when password are not strong  it should flash an error msg  ', async ({ page }) => {
         let Login = new SignUp(page);
@@ -108,14 +111,14 @@ test.describe('User Registration', () => {
         console.log("password", testData.weakPassword);
         await Login.fillSignUpform(testData.verifyUsername, testData.WeakPassword, testData.WeakPassword);
         await Login.submitForm(SubmitSignForm);
-        await Login.getText(WeakPasswordErrorMsg, testData.weakPasswordMsg);
+        await Login.isExpect(WeakPasswordErrorMsg, testData.weakPasswordMsg);
     });
     test('verify that whem Password and comform field are not same it should flash an error msg', async ({ page }) => {
         let Login = new SignUp(page);
         await Login.clickCreateAnAccountButton();
         await Login.fillSignUpform(testData.verifyUsername, testData.StrongPassword, testData.WeakPassword);
         await Login.submitForm(SubmitSignForm);
-        await Login.getText(notSamePasswordXpath, testData.isNotsamePasswordErrorMsg);
+        await Login.isExpect(notSamePasswordXpath, testData.isNotsamePasswordErrorMsg);
     });
     test('verify that when Password and confirm password Eye Icon is clickale and show/hide the Password', async({page}) =>{
         let Login = new SignUp(page);
@@ -135,7 +138,7 @@ test.describe('User Registration', () => {
         await Login.clickCreateAnAccountButton();
         await Login.fillSignUpform(testData.verifyUsername, testData.StrongPassword, testData.StrongPassword);
         await Login.submitForm(SubmitSignForm);
-        await Login.getText(secretPasscodePageXpath , testData.secretPasscode);
+        await Login.isExpect(secretPasscodePageXpath , testData.secretPasscode);
     });
     test('Verify that “Secret Passcode” is auto generating and visible to user  and secrete passcode are not editable readonly', async({page}) =>{
         let Login = new SignUp(page);

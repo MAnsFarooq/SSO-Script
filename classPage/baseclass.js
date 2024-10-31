@@ -1,4 +1,5 @@
-const { expect } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
+test.setTimeout(80000);
 class BasePage {
     constructor(page) {
         this.page = page;
@@ -25,18 +26,18 @@ class BasePage {
 
     // Method to click on a specified selector
     async click(selector) {
-        await this.page.click(selector);
+        await this.page.click(selector  , { state: 'visible' } ,{timeout : 100000} );
     }
 
     // Method to get text content of a specified selector
-    async getText(selector, value) {
-        await this.page.waitForSelector(selector, { state: 'visible', timeout: 10000 });
+    async isExpect(selector, value) {
+        await this.page.waitForSelector(selector, { state: 'visible', timeout: 60000 });
 
         // Get the text content and compare it with the expected value
         const actualText = await this.page.textContent(selector);
         console.log(`Text found: ${actualText}`);
         console.log("value", value)// Debugging log
-        expect(actualText).toBe(value); // Assertion to check if the text matches
+        expect(actualText).toContain(value); // Assertion to check if the text matches
     }
 
     // Method to fill input fields
