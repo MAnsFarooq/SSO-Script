@@ -152,7 +152,7 @@ test.describe('Verify that Sigun-In test work as expected', () => {
         // Step 4: Attempt to access the protected resource after clearing cookies
         await page.reload();
 
-        await page.pause(50000)
+        //await page.pause(50000)
     
         // Step 5: Verify the user is logged out
         await login.isVisible(loginUsernameXpath);

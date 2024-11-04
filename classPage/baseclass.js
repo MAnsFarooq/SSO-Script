@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-test.setTimeout(80000);
+
 class BasePage {
     constructor(page) {
         this.page = page;
@@ -53,6 +53,13 @@ class BasePage {
         await this.page.waitForSelector(selector, { state: 'visible' });
 
         return await this.page.getAttribute(selector, attribute);
+    };
+
+    async ExpectIselementInput(selector){
+        const elementHanlder = await this.page.$(selector);
+        const tagNamePassword = await elementHanlder.evaluate(el => el.tagName);
+        expect(tagNamePassword).toBe('INPUT')
+
     }
 }
 

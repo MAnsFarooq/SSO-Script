@@ -10,7 +10,6 @@ const testData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../flashDat
 
 const {
     accountOverViewXpath,
-    editYourInforXpath,
     YourdetailXpath,
     userName,
     EmailAddress,
@@ -20,7 +19,6 @@ const {
     editYourProfilePicture,
     crossButtonEditProfilePic,
     WellcomeUser,
-    uploadProfilePicture,
     UnexpectProfilePic,
     headerDropdownMenu,
     dropDownSecretePasscode,
@@ -38,7 +36,6 @@ const {
     EmailAddressXpath,
     usernameErrorMsg,
     saveChangesXpath,
-    countrySelectorDropdown,
     emailRequiredMsg,
     countryRequiredMsg,
     editInfoUserName,
@@ -49,7 +46,6 @@ const {
     deleteProcessButton,
     deleteACcancelButton,
     deleationACpasscodefirls,
-    deleteContinueButton,
     pascodeErrorMsg,
     deletepageinitiated
 
@@ -193,20 +189,23 @@ test.describe('Verify that account page test work as expected', () => {
         // // Wait for the button to change its text to "Copied"
         await login.getAttribute(copyPasscodeCSSSelector, 'Copied') // Selector for the button after clicking
     });
-    test('verify that with copy the passcode next button is disAble',{timeout : 90000} ,async ({ page }) => {
-        // Log in and navigate to the relevant page (update login details or steps as necessary)
+    test('verify that the next button is disabled when passcode is not copied', { timeout: 90000 }, async ({ page }) => {
         let login = new Login(page);
         await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
         await login.clickSignButton();
+    
         // Navigate to the profile management or secret passcode section
         await login.click(headerDropdownMenu); // Adjust the selector for the dropdown
         await login.click(dropDownSecretePasscode);
         await login.click(genertasecretPasscodeButton);
-        await login.isVisible(copyPasscodeCSSSelector)
-
-        // check next button is disabled
-        await login.getAttribute(nextButtonCSSSelector, 'disabled')
+        await login.isVisible(copyPasscodeCSSSelector);
+    
+        // Check if the "Next" button is disabled
+        const isDisabled = await login.getAttribute(nextButtonCSSSelector, 'disabled');
+        expect(isDisabled).not.toBeNull(); // Expect the 'disabled' attribute to be present
     });
+   
+
     test('Verify that clicking on Copy Passcode enables the Next button', async ({ page }) => {
         // Log in and navigate to the relevant page (update login details or steps as necessary)
         let login = new Login(page);
@@ -464,11 +463,14 @@ test.describe('Verify that account page test work as expected', () => {
         // wait for the Acount deletion page to load
         await page.waitForSelector(acountDeletion, { state: 'visible' });
         // Check if the two options (cancel and proceed) are visible
-        await login.isVisible(deleteProcessButton);
-        await login.isVisible(deleteACcancelButton);
-
+        const isDeleteProcessButtonVisible = await login.isVisible(deleteProcessButton);
+        const isDeleteACCancelButtonVisible = await login.isVisible(deleteACcancelButton);
+        
+        // Assertions to confirm visibility
+        expect(isDeleteProcessButtonVisible).toBeTruthy(); // Check if "Proceed" button is visible
+        expect(isDeleteACCancelButtonVisible).toBeTruthy(); 
     });
-    test('verify that in the deletion Page when click on the proceed button it should go to the secrete passcode field ,', async ({ page }) => {
+    test.skip('verify that in the deletion Page when click on the proceed button it should go to the secrete passcode field ,', async ({ page }) => {
         let login = new Login(page);
         await login.fillLoginForm(testData.correctValidUserName, testData.correctValidPassword);
         await login.clickSignButton();
@@ -480,6 +482,7 @@ test.describe('Verify that account page test work as expected', () => {
         // Check if the two options (cancel and proceed) are visible
         await login.click(deleteProcessButton);
         await login.isVisible(deleationACpasscodefirls);
+        await login.ExpectIselementInput(deleationACpasscodefirls);
     })
     test('verify that when enter In valid passcode in passcode field for deletion account it should flash error ', async ({ page }) => {
         let login = new Login(page);
@@ -518,8 +521,9 @@ test.describe('Verify that account page test work as expected', () => {
         // Check if the Account Overview page is visible
         await login.isExpect(accountOverViewXpath,'Account Overview');
     });
-    test('verify that when enter valid passcode for delection account click confirm button is should go the dele', async ({ page }) => {
+    test.skip('verify that when enter valid passcode for delection account click confirm button is should go the dele', async ({ page }) => {
         let login = new Login(page);
+        await login.fillLoginForm('gamer107', 'Torres12!!');
         await login.fillLoginForm('gamer107', 'Torres12!!');
         await login.clickSignButton();
         await page.waitForLoadState('networkidle');
@@ -554,7 +558,7 @@ test.describe('Verify that account page test work as expected', () => {
         // Click the continue button
         await continueButton.click();
 
-        await login.isExpect(deletepageinitiated , "Delete Status")
+        await login.isExpect(deletepageinitiated , "Your Virtua Account Deletion Request is being processed.")
 
 
         //

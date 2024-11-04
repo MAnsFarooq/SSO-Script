@@ -89,17 +89,11 @@ test.describe('Security Settings', () => {
         await login.isVisible(securitySecretPasscodeField)
         const passCodeType = await login.getAttribute(securitySecretPasscodeField, 'type');
         expect(passCodeType).toBe('password')
-        const elementHandle = await page.$(securitySecretPasscodeField);
-        // Get the tag name of the element and check it
-        const tagName = await elementHandle.evaluate(el => el.tagName);
-        // Expect the tag name to be 'INPUT'
-        expect(tagName).toBe('INPUT');
+        await login.ExpectIselementInput(securitySecretPasscodeField)
         await login.isVisible(securityNewPasswordField)
-        const elementHanlder = await page.$(securityNewPasswordField)
-        const tagNamePassword = await elementHanlder.evaluate(el => el.tagName);
-        // Expect the tag name to be 'INPUT'
-        expect(tagNamePassword).toBe('INPUT');
-        await login.isVisible(securityConfirmPasswordField)
+        await login.ExpectIselementInput(securityNewPasswordField)
+        await login.isVisible(securityConfirmPasswordField);
+        await login.ExpectIselementInput(securityConfirmPasswordField)
     });
     test('verify that update password with invalid passcode it should should flash error ', async ({ page }) => {
         let login = new Login(page);

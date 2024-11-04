@@ -41,4 +41,4 @@ export const deleteACcancelButton= 'text=CANCEL'
 export const deleationACpasscodefirls = 'input[placeholder="Secret Passcode"]';
 export const deleteContinueButton = '//*[@id="root"]/div/div[2]/div/div/div[4]/div/div/div[2]/div/div/div/div/div/div/form/button';
 export const pascodeErrorMsg = 'div.error'
-export const deletepageinitiated = 'h3:has-text("Deletion Initiated")'  
+export const deletepageinitiated =  'p.text-content';  

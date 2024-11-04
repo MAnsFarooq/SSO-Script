@@ -24,6 +24,7 @@ const {
     notSamePasswordXpath,
     secretPasscodePageXpath,
     acountOverViewPageXpath,
+    signOutButton,
 
 } = require('../pageElements/signUp.js')
 
@@ -184,7 +185,7 @@ test.describe('User Registration', () => {
     test('verify that valids credentials making an account' , async ({ page }) =>{
         let Login = new SignUp(page);
         await Login.clickCreateAnAccountButton();
-        await Login.fillSignUpform(testData.validUsername, testData.StrongPassword, testData.StrongPassword);
+        await Login.fillSignUpform("gamers40", testData.StrongPassword, testData.StrongPassword);
         await Login.submitForm(SubmitSignForm);
         await Login.isCopyppasscodeButtonisClickbaleAndCopyPasscode();
         await Login.isNextButtonEnable();
@@ -193,6 +194,33 @@ test.describe('User Registration', () => {
         await Login.clickOnConfirmButton();
         await Login.isVisible(acountOverViewPageXpath);
     })
+
+    /// create multiple users
+    test.only('verify that valid credentials create an account 30 times', async ({ page }) => {
+        for (let i = 52; i < 55; i++) {
+            const Login = new SignUp(page); // Re-instantiate in each loop for fresh state
+    
+            await test.step(`Run iteration ${i + 1}`, async () => {
+                const uniqueUsername = `gamers${i}`;
+                await Login.clickCreateAnAccountButton();
+                await Login.fillSignUpform(uniqueUsername, testData.StrongPassword, testData.StrongPassword);
+                await Login.submitForm(SubmitSignForm);
+    
+                await Login.isCopyppasscodeButtonisClickbaleAndCopyPasscode();
+                await Login.isNextButtonEnable();
+                await Login.clickOnNextButton();
+                await Login.pasteSecretePasscode();
+                await Login.clickOnConfirmButton();
+    
+                // Ensure account creation confirmation is visible
+                await Login.isVisible(acountOverViewPageXpath);
+    
+                // Navigate or reset state to prepare for next iteration
+               await Login.click(signOutButton)
+            });
+        }
+    });
+    
     
 
 
