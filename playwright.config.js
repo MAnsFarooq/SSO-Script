@@ -26,10 +26,14 @@ module.exports = defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
-timeout: 100000,
+timeout: 200000,
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: 'https://profile.bimtvist.com',
+
+    //Add a 300ms dely between Actions
+
+    slowMo :10000 ,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

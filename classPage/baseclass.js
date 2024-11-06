@@ -26,7 +26,9 @@ class BasePage {
 
     // Method to click on a specified selector
     async click(selector) {
+        let dely =  4000
         await this.page.click(selector  , { state: 'visible' } ,{timeout : 100000} );
+        await this.page.waitForTimeout(dely)
     }
 
     // Method to get text content of a specified selector
@@ -61,6 +63,11 @@ class BasePage {
         expect(tagNamePassword).toBe('INPUT')
 
     }
+
+    async dely(){
+        let dely = 3000;
+        await this.page.waitForTimeout(dely)
+        }
 }
 
 module.exports = BasePage;

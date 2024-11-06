@@ -121,10 +121,12 @@ class SignUp extends BasePage {
 
     };
     async pasteSecretePasscode() {
+        let delay = 2000
         const clipboardText = await this.page.evaluate(async () => await navigator.clipboard.readText());
         //console.log("clipboard", clipboardText);
         await this.page.focus(secretPasscodeFieldXpath);
         await this.fillInput(secretPasscodeFieldXpath, clipboardText)
+        await this.page.waitForTimeout(delay)
     };
 
     async clickOnConfirmButton() {
@@ -156,6 +158,11 @@ class SignUp extends BasePage {
         // Wait for the country option to be visible in the dropdown
         await this.page.waitForSelector(countryOptionSelector, { state: 'visible' });
         await this.page.click(countryOptionSelector);
+    };
+
+    async ConvertXpathToLocator(xpath){
+        const locator = await this.page.locator(xpath);
+        return locator;
     }
     
     

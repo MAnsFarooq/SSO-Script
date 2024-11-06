@@ -1,7 +1,7 @@
 {
     "usernameErrorMsg" :"Username must be at least 6 - 20 letters",
     "passwordErrorMsg" :"Password must have 8 - 20 characters",
-    "username20Character":"user1234567890testname",
+    "username20Character":"user1234567890testna",
     "usernamelessThan6":"user",
     "userGreatorThan20":"TbKdpKwMdslVMPSo7cwztJg0J",
     "WeakPassword":"password",
