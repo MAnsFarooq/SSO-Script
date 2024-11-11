@@ -11,4 +11,9 @@ export const  importWalletButtonSelector = 'button:has-text("Import my wallet")'
 export const gotItButtonSelector = 'button:has-text("Got it")';
 export const nextButtonSelectorAfterGotIt = 'button:has-text("Next")';
 export const nextButtonTextSelector = "//button[text()='Next']";
+export const Done =  'button:has-text("Done")';
+export const networkSelectDropDown = '.mm-picker-network__arrow-down-icon';
+export const checkTestNetwork = 'div[style*="width: 18px; height: 18px;"]';
+export const selectSopliaNetwork = 'text=Sepolia';
+
 
