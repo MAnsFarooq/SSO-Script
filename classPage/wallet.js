@@ -36,7 +36,7 @@ const { ethIconSelector,
 } = require('../pageElements/profiler')
 const fs = require('fs');
 const path = require('path');
-const testData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../flashData/walletCredentials.json'), 'utf-8'));
+const testData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../flashData/metamaskwalletCredentials.json'), 'utf-8'));
 const BasePage = require('./baseclass');
 class Wallet extends BasePage   {
     constructor(page) {
@@ -170,6 +170,9 @@ class Wallet extends BasePage   {
         console.log(`Text found: ${actualText}`);
         console.log("value",'Wallet address already linked to a user' )// Debugging log
         expect(actualText).toContain('Wallet address already linked to a user'); // Assertion to check if the text matches
+    };
+    async WalletDeAttached(){
+
     }
 
 
