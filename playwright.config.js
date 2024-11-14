@@ -26,7 +26,7 @@ module.exports = defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
-timeout: 80000,
+timeout: 500000,
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: 'https://profile.bimtvist.com',

@@ -289,11 +289,11 @@ test.describe('User Registration', () => {
 
     /// create multiple users
     test.only('verify that valid credentials create an account 30 times', async ({ page }) => {
-        for (let i = 57 ; i < 70; i++) {
+        for (let i =34 ; i < 40; i++) {
             const Login = new SignUp(page); // Re-instantiate in each loop for fresh state
     
             await test.step(`Run iteration ${i + 1}`, async () => {
-                const uniqueUsername = `checker${i}`;
+                const uniqueUsername = `taken${i}`;
                 await Login.clickCreateAnAccountButton();
                 await Login.fillSignUpform(uniqueUsername, testData.StrongPassword, testData.StrongPassword);
                 await Login.submitForm(SubmitSignForm);

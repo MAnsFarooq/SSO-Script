@@ -62,6 +62,7 @@ class Wallet extends BasePage   {
         const words = seedPhrase.split(' ');
         for (let i = 0; i < words.length; i++) {
             await this.fillInput(`//*[@id="import-srp__srp-word-${i}"]`, words[i]);  // Use XPath for each word field
+            
         }
     };
 
