@@ -1,3 +1,5 @@
+
+**_****This project is licensed under Big Immersive QA. ********************_**
 **SSO Automation Project**
 **Overview**
 This project automates the Single Sign-On (SSO) functionality, including user registration, login validation, wallet connection checks, and account management. It ensures proper validation of user credentials, security features, and wallet connections. The project also covers account overview tests like username validation and security checks.
