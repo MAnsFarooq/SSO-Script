@@ -45,7 +45,7 @@ class BasePage {
     // Method to fill input fields
     async fillInput(selector, value) {
         console.log(selector + ': ' + value);
-        await this.page.waitForSelector(selector, { state: 'visible', timeout: 100000 }); // Ensure the input field is visible
+        await this.page.waitForSelector(selector, { state: 'visible', timeout: 10000 }); // Ensure the input field is visible
         await this.page.fill(selector, value); // Fill the input field after visibility
     }
 

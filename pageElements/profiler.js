@@ -8,5 +8,6 @@ export const AddWalletSelector  ='button:has-text("Add Wallet")'
 export const addEthereumSelector = 'span.text:has-text("Ethereum")';
 export const addMetamask = 'span:has-text("MetaMask")';
 export const CardanoWalletselector = 'button:has-text("Cardano")';
-export const addGero = 'span:has-text("Gero")'
-export const alreadyConnectedSelector = 'text=Wallet address already linked to a user';
+export const addGero = 'span:has-text("Gero")';
+export const addTyphon = 'span:has-text("Typhon")';
+export const alreadyConnectedSelector = 'p:has-text("Wallet address already linked to a user")';

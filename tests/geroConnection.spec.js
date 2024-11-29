@@ -33,7 +33,7 @@ test.describe('Cardano Gero Wallet Integration with SSO', () => {
         }
     });
 
-    test('verify that Gero extension is loaded', async () => {
+    test('verify If gero Wallet Already Link with Other SSO it should flash error Message : Wallet Already Linked:', async () => {
         // Verify the extension's page is available
         await GeroPage.goto('chrome-extension://gbacgmmhkmcifjojhmaimddmdloogjlc/index.html?#/');
         const geroWallet = new Gero(GeroPage);
@@ -72,9 +72,18 @@ test.describe('Cardano Gero Wallet Integration with SSO', () => {
         await walletPopUp.checkMarkPopUp();
         await walletPopUp.connectWalletPopUp();
         await geroWalletpopUp.waitForLoadState('networkidle');
-        await walletPopUp.clickOnContioueAfterConnectPopUp(geroWalletpopUp);
+       
 
+        const [gerowalletNextPopUp] = await Promise.all([
+            browser.waitForEvent('page'),  // Listen for the Gero pop-up page
+        ]);
+        const walletNextPopUp = new Gero(gerowalletNextPopUp)
+        await walletNextPopUp.clickOnContioueAfterConnectPopUp(gerowalletNextPopUp);
+        await walletNextPopUp.WriteWalletPasswordForConfirm();
+        await walletNextPopUp.clickOnNextButtonForConfirm();
+        /// Check Assertion Wallet already linked error message
+        await geroWallet.isExpectwalletalreadylinkedtoauserErrorMessage();
         //clickOnContinueAfterConnectPopUp
-        await sleep(200000);
+        await sleep(3000);
     });
 });

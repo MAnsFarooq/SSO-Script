@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const {expect } =require('@playwright/test')
 const BasePage = require('./baseclass');
 const testData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../flashData/geroWalletCredentials.json'), 'utf-8'));
 
@@ -22,7 +23,10 @@ const {
     continoueButtonSelector,
     checkMarkselector,
     connectWalletSelector,
-    contioueAfterConnect
+    contioueAfterConnect,
+    passwordFieldForConfirm,
+    nextButtonforConfirm,
+    
 
 
 } = require('../pageElements/gero');
@@ -34,7 +38,8 @@ const {
     AddWalletSelector,
     CardanoWalletselector,
     addGero,
-    walletconnectionicon
+    walletconnectionicon,
+    alreadyConnectedSelector
 } = require('../pageElements/profiler')
 
 class Gero extends BasePage{
@@ -141,6 +146,20 @@ class Gero extends BasePage{
             console.error(error.stack);
         }
     };
+    async WriteWalletPasswordForConfirm(){
+        await this.fillInput(passwordFieldForConfirm, testData.WalletPassword);
+    };
+    async clickOnNextButtonForConfirm(){
+        await this.page.click(nextButtonforConfirm)
+    };
+    async isExpectwalletalreadylinkedtoauserErrorMessage(){
+         // Get the text content and compare it with the expected value
+         const actualText = await this.page.textContent(alreadyConnectedSelector);
+         console.log(`Text found: ${actualText}`);
+         console.log("value",'Wallet address already linked to a user' )// Debugging log
+         expect(actualText).toContain('Wallet address already linked to a user'); // Assertion to check if the text matches
+    }
+
 }
     
     

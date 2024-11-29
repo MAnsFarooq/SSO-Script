@@ -15,4 +15,7 @@ export const clickOnRadioButton = 'input[type="radio"]';
 export const continoueButtonSelector = 'button:has-text("Continue")'
 export const checkMarkselector = 'span.checkmark';
 export const connectWalletSelector = 'button:has-text("Connect")'
+// next Pop UI
 export const contioueAfterConnect = 'button:has-text("Continue")';
+export const passwordFieldForConfirm = 'input[type="password"]';
+export const nextButtonforConfirm = 'button:has-text("Next")';
