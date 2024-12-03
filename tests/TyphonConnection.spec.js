@@ -1,6 +1,6 @@
-const { test  , expect }  = require("@playwright/test");
-const {chromium } = require('playwright');
-const { setTimeout  : sleep} = require('timers/promises');
+const { test, expect } = require("@playwright/test");
+const { chromium } = require('playwright');
+const { setTimeout: sleep } = require('timers/promises');
 
 /////////////////Import Class Typhon
 const Typhon = require('../classPage/typhon');
@@ -9,10 +9,10 @@ const Typhon = require('../classPage/typhon');
 test.describe("Typhon Wallet Integration with SSO", () => {
     let browser;
     let typhonPage;
-    
-    test.beforeAll( async () => {
+
+    test.beforeAll(async () => {
         const typhonPath = "c:/Users/BiM Dev - 011/AppData/Local/Google/Chrome/User Data/Profile 5/Extensions/kfdniefadaanbjodldohaedphafoffoh/3.2.6_0";
-        browser = await chromium.launchPersistentContext('' , {
+        browser = await chromium.launchPersistentContext('', {
             headless: false,
             args: [
                 `--disable-extensions-except=${typhonPath}`,
@@ -21,7 +21,7 @@ test.describe("Typhon Wallet Integration with SSO", () => {
         });
         await sleep(5000);
 
-        const pages=await browser.pages();
+        const pages = await browser.pages();
         for (const page of pages) {
             if ((await page.url()) === 'about:blank') {
                 await page.close();
@@ -30,7 +30,7 @@ test.describe("Typhon Wallet Integration with SSO", () => {
         typhonPage = (await browser.pages())[0];
     });
     // Test Cases ;
-    test(" verify that typhon page is working" , async ()=>{
+    test(" verify that typhon page is working", async () => {
         //console.log("Page",typhonPage)
         let typhon = new Typhon(typhonPage);
         //await typhon.clickOnCreateWallet();
@@ -40,7 +40,7 @@ test.describe("Typhon Wallet Integration with SSO", () => {
         await typhon.enterConfirmWalletpassword();
         await typhon.checkTermsAndConditions();
         await typhon.clickOnContinue();
-        await typhon.selectSeedtype();    
+        await typhon.selectSeedtype();
         await typhon.writeseedPhrase();
         await typhon.unLockwallet();
 
@@ -51,31 +51,41 @@ test.describe("Typhon Wallet Integration with SSO", () => {
         await typhon.clickOnAddWallet();
         await typhon.clickOnCardano();
         await typhon.clickOnTyphonWallet();
-       /// Handling Typhon Pop up Window 
-        const [typhonPopUpWindow] = await Promise.all([
+        /// Handling Typhon Pop up Window 
+        const typhonPopUpWindow = await Promise.all([
             browser.waitForEvent('page'),
         ]);
-        await typhonPopUpWindow.waitForLoadState();
-        let  typhonPopUp = new Typhon(typhonPopUpWindow);
-        //await sleep(200000);
-        await typhonPopUp.ClickOnAllowButton();
-  
+        // const pageHTML = await typhonPopUpWindow.content();
+        // console.log(pageHTML);
+
+        let typhonPopUp = new Typhon(typhonPopUpWindow[0]);
+        // const allButtons = await typhonPopUpWindow.locator('button').allTextContents();
+        // console.log('Available buttons:', allButtons);
+        // await sleep(200000);
+        let buttonAllow = await typhonPopUp.getOnAllowButton();
+        await buttonAllow.evaluate((button) => {
+            button.style.transition = "background-color 0.3s ease"; // Smooth transition
+            button.style.backgroundColor = "yellow"; // Highlight color
+        });
+        await buttonAllow.click();
+        
+
 
         // Another Pop Up Window for Typhon
-        const [typhonPopUpWindow2] = await Promise.all([
-            browser.waitForEvent('page'),
-        ]);
-        console.log('another pop',typhonPopUpWindow2)
-        await typhonPopUpWindow2.waitForLoadState();
-        const typhonPopUp2 = new Typhon(typhonPopUpWindow2);
-        await sleep(10000);
-        await typhonPopUp2.clickOnSignButton()
-        await typhonPopUp2.writePassword();
+        // const [typhonPopUpWindow2] = await Promise.all([
+        //     browser.waitForEvent('page'),
+        // ]);
+        // console.log('another pop',typhonPopUpWindow2)
+        // await typhonPopUpWindow2.waitForLoadState();
+        // const typhonPopUp2 = new Typhon(typhonPopUpWindow2);
+        // await sleep(10000);
+        // await typhonPopUp2.clickOnSignButton()
+        // await typhonPopUp2.writePassword();
 
 
 
 
-        await sleep(50000)
+        await sleep(5000)
 
-    } )
+    })
 })

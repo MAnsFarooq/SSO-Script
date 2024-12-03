@@ -93,6 +93,10 @@ class Typhon extends BasePage {
         await this.page.click(addTyphon);
     };
 
+    async getOnAllowButton(){
+        return await this.page.locator(AllowButton);
+    };
+
     /// Typhon Pop up Window Implementation;
     async ClickOnAllowButton(){
         await this.page.click(AllowButton);

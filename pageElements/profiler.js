@@ -10,4 +10,5 @@ export const addMetamask = 'span:has-text("MetaMask")';
 export const CardanoWalletselector = 'button:has-text("Cardano")';
 export const addGero = 'span:has-text("Gero")';
 export const addTyphon = 'span:has-text("Typhon")';
+export const addLace = 'span:has-text("lace")';
 export const alreadyConnectedSelector = 'p:has-text("Wallet address already linked to a user")';
