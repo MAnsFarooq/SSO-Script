@@ -1,0 +1,1 @@
+export const iAgreeSelector = 'button:has-text("I agree")';

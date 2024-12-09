@@ -11,7 +11,7 @@ test.describe('Cardano wallet lace integration', async () => {
     let lacepage;
     let profile
     test.beforeAll(async () => {
-        const laceWalletPath = "c:/Users/BiM Dev - 011/AppData/Local/Google/Chrome/User Data/Profile 5/Extensions/gafhhkghbfjjkeiendhlofajokpaflmk/1.17.5_0"
+        const laceWalletPath = "C:/Users/BiM Dev - 011/AppData/Local/Google/Chrome/User Data/Profile 5/Extensions/kfdniefadaanbjodldohaedphafoffo/3.2.7_0"
         browser = await chromium.launchPersistentContext('', {
             headless: false,
             args: [
@@ -20,9 +20,7 @@ test.describe('Cardano wallet lace integration', async () => {
             ],
         });
         await sleep(10000);
-
         const pages = await browser.pages();
-        
         for (const page of pages) { 
             if ((await page.url()) === 'about:blank') {
                 profile = page; // Assign the page to the profile variable
@@ -30,26 +28,10 @@ test.describe('Cardano wallet lace integration', async () => {
                 break; // Exit the loop after navigating
             }
         }
-        
         lacepage = await pages[0]
-        
-
-
-
-
-
         await lacepage.waitForLoadState(); // Ensure the page is fully loaded
-
     });
-    test('verify that lace wallet extension load successfully', async () => {
-
-
-      
-        // // await lace.clickAgreeButton()
-        // await sleep(5000);
-        // await lacepage.close()
-        // await lacepage.waitForLoadState(); // Ensure the page is
-
+    test('verify that lace If Wallet already attach with other SOO Profile If Should Flash message " Wallet already linket  ', async () => {
         await lacepage.goto('chrome-extension://gafhhkghbfjjkeiendhlofajokpaflmk/app.html#/assets')
         let lacewindowpage = new Lace(lacepage)
         await lacewindowpage.clickAgreeButton();
@@ -63,7 +45,6 @@ test.describe('Cardano wallet lace integration', async () => {
         await lacepage.waitForTimeout(5000);
        //console.log("found",profile)
         //await profile.goto('https://profile.bimtvist.com/');
-      
         console.log("Reloading profile page...");
         if (profile && !profile.isClosed()) {
             await profile.goto('https://profile.bimtvist.com/', { waitUntil: 'domcontentloaded' });
@@ -71,10 +52,8 @@ test.describe('Cardano wallet lace integration', async () => {
         } else {
             console.error("Profile page is not available.");
         }
-
         let lace = new Lace(profile);
         /////////////
-      
         await lace.LoginNonConnectWalletUser();
         await lace.clickOnWalletConnectionIcon()
         await lace.AddWallet();
@@ -85,7 +64,6 @@ test.describe('Cardano wallet lace integration', async () => {
             await browser.waitForEvent('page')
         ])
         let lacePopWindow = new Lace(popWindow)
-        
         await lacePopWindow.Authorize()
         await lacePopWindow.clickOnAlways()
         let [popWindow2] = await Promise.all([
@@ -97,9 +75,6 @@ test.describe('Cardano wallet lace integration', async () => {
         await lacePopWindow2.writeExistingWalletPassword()
         await lacePopWindow2.clickOnConfirm()
         await lacePopWindow2.closeWallet()
-
-
-
-        await sleep(20000000)
+        await sleep(5000)
     })
 })

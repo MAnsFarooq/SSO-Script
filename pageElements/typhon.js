@@ -11,3 +11,4 @@ export const unlockWalletButton = 'button:has-text("Unlock Wallet")';
 export const AllowButton  = 'button:has-text("Allow")';
 export const signButton = 'button:has-text("Sign")';
 export const password = 'input[type ="password"]'
+export const confirmation = 'input[type ="confirm"]';

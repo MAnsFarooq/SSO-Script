@@ -15,7 +15,8 @@ const {
     unlockWalletButton, 
     AllowButton,
     signButton,
-    password
+    password,
+    confirmation
 
 
 } = require('../pageElements/typhon');
@@ -107,6 +108,10 @@ class Typhon extends BasePage {
     async writePassword(){
         await this.fillInput(password , testData.AutheniticatedWalletPassword);
     };
+    async clickConfirmation(){
+        await this.click(confirmation);
+    }
+
     
 
     

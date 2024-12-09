@@ -11,7 +11,7 @@ test.describe("Typhon Wallet Integration with SSO", () => {
     let typhonPage;
 
     test.beforeAll(async () => {
-        const typhonPath = "c:/Users/BiM Dev - 011/AppData/Local/Google/Chrome/User Data/Profile 5/Extensions/kfdniefadaanbjodldohaedphafoffoh/3.2.6_0";
+        const typhonPath = "C:/Users/BiM Dev - 011/AppData/Local/Google/Chrome/User Data/Profile 5/Extensions/kfdniefadaanbjodldohaedphafoffoh/3.2.7_0";
         browser = await chromium.launchPersistentContext('', {
             headless: false,
             args: [
@@ -67,25 +67,29 @@ test.describe("Typhon Wallet Integration with SSO", () => {
             button.style.transition = "background-color 0.3s ease"; // Smooth transition
             button.style.backgroundColor = "yellow"; // Highlight color
         });
+
+        await sleep(10000);
         await buttonAllow.click();
         
 
-
+      
         // Another Pop Up Window for Typhon
-        // const [typhonPopUpWindow2] = await Promise.all([
-        //     browser.waitForEvent('page'),
-        // ]);
-        // console.log('another pop',typhonPopUpWindow2)
-        // await typhonPopUpWindow2.waitForLoadState();
-        // const typhonPopUp2 = new Typhon(typhonPopUpWindow2);
-        // await sleep(10000);
-        // await typhonPopUp2.clickOnSignButton()
-        // await typhonPopUp2.writePassword();
+        const [typhonPopUpWindow2] = await Promise.all([
+            browser.waitForEvent('page'),
+        ]);
+        console.log('another pop',typhonPopUpWindow2)
+        await typhonPopUpWindow2.waitForLoadState();
+        const typhonPopUp2 = new Typhon(typhonPopUpWindow2);
+        await sleep(10000);
+        await typhonPopUp2.clickOnSignButton()
+        await typhonPopUp2.writePassword();
+        await typhonPopUp2.clickConfirmation()
 
 
 
 
-        await sleep(5000)
+
+        await sleep(100000)
 
     })
 })
